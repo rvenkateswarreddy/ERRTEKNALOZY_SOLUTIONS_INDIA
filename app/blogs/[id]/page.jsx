@@ -4,14 +4,11 @@ import Link from "next/link";
 import { useState } from "react";
 
 // Dummy AdComponent implementation.
-// In a real app, import AdComponent from your actual ad library.
 function AdComponent({
   dataAdFormat,
   dataFullWidthResponsive,
   className = "",
 }) {
-  // Normally you'd inject a script or use a third-party component.
-  // Here, we just display a placeholder.
   return (
     <div
       className={`relative w-full h-32 bg-gradient-to-r from-cyan-800 to-cyan-500 rounded-xl flex items-center justify-center shadow border border-gray-800 ${className}`}
@@ -20,14 +17,7 @@ function AdComponent({
         overflow: "hidden",
       }}
     >
-      <span className="text-white font-bold text-lg">
-        {/* Simulate ad text */}
-        Sponsored Ad
-      </span>
-      {/* Optionally, you can display props for debugging */}
-      {/* <div className="absolute bottom-1 right-1 text-xs text-white">
-        {dataAdFormat}, {dataFullWidthResponsive ? "Responsive" : "Fixed"}
-      </div> */}
+      <span className="text-white font-bold text-lg">Sponsored Ad</span>
     </div>
   );
 }
@@ -101,9 +91,10 @@ export default function BlogPost({ params }) {
     setName("");
   };
 
+  // FIX: decodeURIComponent for the blog param for proper parsing
   let post = null;
   try {
-    post = blogParam && JSON.parse(blogParam);
+    post = blogParam && JSON.parse(decodeURIComponent(blogParam));
   } catch (e) {
     post = null;
   }
@@ -170,25 +161,24 @@ export default function BlogPost({ params }) {
                 </div>
               </div>
               <span className="ml-auto text-gray-400 text-sm">
-                {Math.ceil(post.summary.length / 200)} min read
+                {Math.ceil(
+                  ((post.summary?.length || 0) +
+                    (post.description?.length || 0)) /
+                    200
+                ) || 1}{" "}
+                min read
               </span>
             </div>
 
             <div className="prose prose-invert max-w-none text-gray-300 mb-8">
-              <p className="text-lg leading-relaxed mb-6">{post.summary}</p>
-              <p className="leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-                in dui mauris. Vivamus hendrerit arcu sed erat molestie
-                vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh
-                porttitor. Ut in nulla enim. Phasellus molestie magna non est
-                bibendum non venenatis nisl tempor.
-              </p>
-              <p className="leading-relaxed">
-                Suspendisse potenti. Sed egestas, ante et vulputate volutpat,
-                eros pede semper est, vitae luctus metus libero eu augue. Morbi
-                purus libero, faucibus adipiscing, commodo quis, gravida id,
-                est. Sed lectus. Praesent elementum hendrerit tortor.
-              </p>
+              {post.summary && (
+                <p className="text-lg leading-relaxed mb-6">{post.summary}</p>
+              )}
+              {post.description && (
+                <p className="leading-relaxed mb-6 whitespace-pre-line">
+                  {post.description}
+                </p>
+              )}
             </div>
           </div>
 
@@ -303,13 +293,11 @@ export default function BlogPost({ params }) {
             </div>
             {/* Right: Ads Section */}
             <div className="flex flex-col gap-8">
-              {/* AdComponent 1 */}
               <AdComponent
                 dataAdFormat="auto"
                 dataFullWidthResponsive={true}
                 className="mb-6"
               />
-              {/* AdComponent 2 */}
               <AdComponent
                 dataAdFormat="auto"
                 dataFullWidthResponsive={true}

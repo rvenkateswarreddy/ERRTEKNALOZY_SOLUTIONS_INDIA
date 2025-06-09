@@ -93,8 +93,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <VerticalAd />
-
+      <HorizontalAd />
       {/* Call-to-action Section */}
       <section className="max-w-4xl mx-auto mt-20 text-center">
         <div className="bg-gradient-to-r from-cyan-800/80 via-fuchsia-800/80 to-yellow-800/70 rounded-2xl shadow-lg p-10 border border-fuchsia-800">

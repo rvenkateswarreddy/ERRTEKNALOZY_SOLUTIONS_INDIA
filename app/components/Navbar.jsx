@@ -90,20 +90,20 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center space-x-2">
             {navLinks.map((link) =>
               link.id === "/blogs" ? (
-                <Link key={link.id} href={link.id} passHref legacyBehavior>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`flex items-center gap-2 px-4 py-2 text-lg font-medium rounded-full transition-all
+                <Link
+                  key={link.id}
+                  href={link.id}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex items-center gap-2 px-4 py-2 text-lg font-medium rounded-full transition-all
                       ${
                         pathname === link.id
                           ? "bg-gradient-to-r from-fuchsia-600 to-blue-600 text-white shadow-lg"
                           : "text-gray-300 hover:bg-gray-800/80 hover:text-white"
                       }`}
-                  >
-                    {link.icon}
-                    {link.label}
-                  </a>
+                >
+                  {link.icon}
+                  {link.label}
                 </Link>
               ) : (
                 <Link
@@ -180,21 +180,21 @@ export default function Navbar() {
               <nav className="mt-24 flex flex-col items-center gap-6">
                 {navLinks.map((link) =>
                   link.id === "/blogs" ? (
-                    <Link key={link.id} href={link.id} passHref legacyBehavior>
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setIsOpen(false)}
-                        className={`flex items-center gap-3 px-8 py-3 text-xl font-semibold rounded-full w-64 justify-center
+                    <Link
+                      key={link.id}
+                      href={link.id}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center gap-3 px-8 py-3 text-xl font-semibold rounded-full w-64 justify-center
                           ${
                             pathname === link.id
                               ? "bg-gradient-to-r from-fuchsia-600 to-blue-600 text-white shadow-lg"
                               : "text-gray-300 hover:bg-gray-800/80 hover:text-white"
                           }`}
-                      >
-                        {link.icon}
-                        {link.label}
-                      </a>
+                    >
+                      {link.icon}
+                      {link.label}
                     </Link>
                   ) : (
                     <Link

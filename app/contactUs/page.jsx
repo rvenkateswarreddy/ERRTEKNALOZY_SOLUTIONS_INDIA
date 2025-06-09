@@ -3,6 +3,7 @@ import React from "react";
 import { FiMail, FiSend, FiPhone, FiMapPin } from "react-icons/fi";
 import Image from "next/image";
 import VerticalAd from "../components/VerticalAd";
+import HorizontalAd from "../components/HorizontalAd";
 
 const ContactPage = () => {
   return (
@@ -180,7 +181,7 @@ const ContactPage = () => {
           </div>
         </div>
 
-        <VerticalAd />
+        <HorizontalAd />
 
         {/* Optional Map or Social Links Section */}
         <div className="text-center mt-20">
