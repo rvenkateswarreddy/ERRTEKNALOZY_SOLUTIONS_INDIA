@@ -6,164 +6,34 @@ import { MdOutlineCategory } from "react-icons/md";
 import { GiArrowsShield } from "react-icons/gi";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import HorizontalAd from "../components/HorizontalAd";
-import VerticalAd from "../components/VerticalAd";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "@/FirebaseConfig";
 
-// Blog data with more entries & professional categories
-const blogPosts = [
-  // ... (same as your original blogPosts array)
-  {
-    id: 1,
-    title: "Exploring the Future of AI in Everyday Life",
-    image: "/assets/fashion.jpg",
-    summary:
-      "Artificial Intelligence is changing how we live, work, and play. Discover how AI is embedded in our lives and shaping the future across industries and experiences.",
-    date: "May 28, 2025",
-    category: "AI & Tech",
-    trending: true,
-  },
-  {
-    id: 2,
-    title: "Top 10 Travel Destinations for 2025",
-    image: "/assets/travel.jpg",
-    summary:
-      "Ready to explore the world? These handpicked destinations will give you unforgettable memories. From hidden gems to popular paradises, plan your perfect journey today.",
-    date: "May 26, 2025",
-    category: "Travel",
-    trending: true,
-  },
-  {
-    id: 3,
-    title: "The Sustainable Fashion Revolution",
-    image: "/assets/fashion.jpg",
-    summary:
-      "How eco-friendly materials and ethical practices are transforming the fashion industry. Learn about brands leading the charge toward a more sustainable future.",
-    date: "May 24, 2025",
-    category: "Fashion",
-    trending: false,
-  },
-  {
-    id: 4,
-    title: "Modern Web Development Trends in 2025",
-    image: "/assets/travel.jpg",
-    summary:
-      "Stay ahead with the latest technologies shaping web development. From server components to AI integration, discover what's powering the next generation of web apps.",
-    date: "May 22, 2025",
-    category: "Web Development",
-    trending: false,
-  },
-  {
-    id: 5,
-    title: "The Future of Remote Work",
-    image: "/assets/fashion.jpg",
-    summary:
-      "How remote work is evolving in 2025 with new technologies and work paradigms. Explore the tools and practices shaping the future of distributed teams.",
-    date: "May 20, 2025",
-    category: "Business",
-    trending: false,
-  },
-  {
-    id: 6,
-    title: "Healthy Eating Habits for Programmers",
-    image: "/assets/travel.jpg",
-    summary:
-      "Nutrition tips and meal plans designed specifically for developers and tech professionals who spend long hours at their computers.",
-    date: "May 18, 2025",
-    category: "Health",
-    trending: false,
-  },
-  {
-    id: 7,
-    title: "Mastering Data Science: What to Expect in 2025",
-    image: "/assets/data.jpg",
-    summary:
-      "Data science continues to evolve rapidly. Learn about the skills, tools, and trends that will dominate in the coming year.",
-    date: "May 15, 2025",
-    category: "AI & Tech",
-    trending: false,
-  },
-  {
-    id: 8,
-    title: "Eco-Friendly Travel: Tips for a Greener Adventure",
-    image: "/assets/green_travel.jpg",
-    summary:
-      "Explore the world sustainably. Discover actionable tips for reducing your environmental impact while traveling.",
-    date: "May 12, 2025",
-    category: "Travel",
-    trending: false,
-  },
-  {
-    id: 9,
-    title: "Top 5 Investment Strategies for Millennials",
-    image: "/assets/business.jpg",
-    summary:
-      "Financial freedom is within reach. These investment strategies are tailored for the goals and challenges of the millennial generation.",
-    date: "May 10, 2025",
-    category: "Business",
-    trending: false,
-  },
-  {
-    id: 10,
-    title: "Yoga and Mindfulness: The Modern Developer's Guide",
-    image: "/assets/health.jpg",
-    summary:
-      "Balance your mind and body. Learn how yoga and mindfulness practices can boost your productivity and well-being.",
-    date: "May 8, 2025",
-    category: "Health",
-    trending: false,
-  },
-  {
-    id: 11,
-    title: "Minimalism in Fashion: Less is More",
-    image: "/assets/minimal_fashion.jpg",
-    summary:
-      "Minimalist fashion is on the rise. Discover how simplicity in style can be both elegant and sustainable.",
-    date: "May 5, 2025",
-    category: "Fashion",
-    trending: false,
-  },
-  {
-    id: 12,
-    title: "React Server Components: The Next Revolution",
-    image: "/assets/webdev.jpg",
-    summary:
-      "React Server Components are set to change the way we build web apps. Dive into the future of front-end development.",
-    date: "May 2, 2025",
-    category: "Web Development",
-    trending: true,
-  },
-  {
-    id: 12,
-    title: "React Server Components: The Next Revolution",
-    image: "/assets/webdev.jpg",
-    summary:
-      "React Server Components are set to change the way we build web apps. Dive into the future of front-end development.",
-    date: "May 2, 2025",
-    category: "Fashion",
-    trending: false,
-  },
-];
-
-// Side images (unchanged)
-const sideImages = [
-  {
-    url: "/assets/side1.jpg",
-    alt: "Cityscape at sunset",
-    caption: "Urban Inspiration",
-  },
-
-  {
-    url: "/assets/side3.jpg",
-    alt: "Healthy food",
-    caption: "Eat Well, Live Well",
-  },
-  {
-    url: "/assets/side4.jpg",
-    alt: "Remote work setup",
-    caption: "Work From Anywhere",
-  },
-];
+// Utility: convert Firestore timestamp or ISO string to formatted date
+function formatDate(date) {
+  if (!date) return "";
+  if (typeof date === "string") {
+    return new Date(date).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
+  // Firestore timestamp
+  if (typeof date === "object" && date.seconds) {
+    return new Date(date.seconds * 1000).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
+  return "";
+}
 
 const RecentPosts = () => {
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [sideImages, setSideImages] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isLargeScreen, setIsLargeScreen] = useState(false);
@@ -178,6 +48,36 @@ const RecentPosts = () => {
   const trendingRef = useRef(null);
   const categoriesBarRef = useRef(null);
   const leftColRef = useRef(null);
+
+  // --- Fetch data on mount ---
+  useEffect(() => {
+    async function fetchData() {
+      // Fetch blogs
+      const blogsCol = collection(db, "blogs");
+      const blogsSnapshot = await getDocs(
+        query(blogsCol, orderBy("date", "desc"))
+      );
+      const blogsData = [];
+      blogsSnapshot.forEach((doc) => {
+        blogsData.push({ ...doc.data(), id: doc.id });
+      });
+
+      // Fetch promotions (sideImages)
+      const promoCol = collection(db, "promotions");
+      const promoSnapshot = await getDocs(
+        query(promoCol, orderBy("createdAt", "desc"))
+      );
+      const promoData = [];
+      promoSnapshot.forEach((doc) => {
+        promoData.push({ ...doc.data(), id: doc.id });
+      });
+
+      setBlogPosts(blogsData);
+      setSideImages(promoData);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   // Responsive logic
   useEffect(() => {
@@ -196,8 +96,8 @@ const RecentPosts = () => {
     (post) =>
       post.trending &&
       (selectedCategory === "All" || post.category === selectedCategory) &&
-      (post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.summary.toLowerCase().includes(searchTerm.toLowerCase()))
+      (post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.summary?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // Group non-trending posts by category
@@ -206,8 +106,8 @@ const RecentPosts = () => {
       (post) =>
         !post.trending &&
         (selectedCategory === "All" || post.category === selectedCategory) &&
-        (post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          post.summary.toLowerCase().includes(searchTerm.toLowerCase()))
+        (post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.summary?.toLowerCase().includes(searchTerm.toLowerCase()))
     )
     .reduce((acc, post) => {
       acc[post.category] = acc[post.category] || [];
@@ -224,7 +124,7 @@ const RecentPosts = () => {
 
     let ticking = false;
     const handleScroll = () => {
-      if (!isCategoriesSticky) return; // Only activate scroll highlight when sticky
+      if (!isCategoriesSticky) return;
 
       let sectionPositions = [];
       if (trendingRef.current && filteredTrending.length > 0) {
@@ -241,7 +141,7 @@ const RecentPosts = () => {
             sectionPositions.push({
               category: cat,
               ref,
-              top: ref.getBoundingClientRect().top,
+              top: ref.current ? ref.current.getBoundingClientRect().top : 0,
             });
           }
         });
@@ -251,20 +151,15 @@ const RecentPosts = () => {
           sectionPositions.push({
             category: selectedCategory,
             ref,
-            top: ref.getBoundingClientRect().top,
+            top: ref.current ? ref.current.getBoundingClientRect().top : 0,
           });
         }
       }
-
-      const offset =
-        (categoriesBarRef.current?.offsetHeight || 0) +
-        (categoriesBarRef.current?.getBoundingClientRect().top || 0);
 
       let current = "All";
       for (let i = 0; i < sectionPositions.length; i++) {
         const { category, ref } = sectionPositions[i];
         const rect = ref.current.getBoundingClientRect();
-        // Use leftCol's scroll container as a reference
         if (
           rect.top -
             (categoriesBarRef.current?.getBoundingClientRect().bottom || 0) <=
@@ -330,14 +225,14 @@ const RecentPosts = () => {
       if (isLargeScreen && leftColRef.current) {
         top =
           leftColRef.current.scrollTop +
-          categoryRefs.current[cat].getBoundingClientRect().top -
+          categoryRefs.current[cat].current.getBoundingClientRect().top -
           leftColRef.current.getBoundingClientRect().top -
           offset;
         leftColRef.current.scrollTo({ top, behavior: "smooth" });
       } else {
         top =
           window.scrollY +
-          categoryRefs.current[cat].getBoundingClientRect().top -
+          categoryRefs.current[cat].current.getBoundingClientRect().top -
           offset;
         window.scrollTo({ top, behavior: "smooth" });
       }
@@ -351,6 +246,16 @@ const RecentPosts = () => {
     }
     return categoryRefs.current[cat];
   };
+
+  if (loading) {
+    return (
+      <section className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-2 sm:px-4 text-white">
+        <div className="max-w-7xl mx-auto flex items-center justify-center h-40">
+          <span className="text-lg text-cyan-400">Loading...</span>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-2 sm:px-4 text-white">
@@ -494,6 +399,9 @@ const RecentPosts = () => {
                           >
                             {post.title}
                           </Link>
+                          <span className="text-[10px] text-gray-400 ml-2">
+                            {formatDate(post.date)}
+                          </span>
                         </li>
                       ))
                     )}
@@ -530,6 +438,9 @@ const RecentPosts = () => {
                         >
                           {post.title}
                         </Link>
+                        <span className="text-[10px] text-gray-400 ml-2">
+                          {formatDate(post.date)}
+                        </span>
                       </li>
                     ))
                   )}
@@ -544,31 +455,25 @@ const RecentPosts = () => {
             style={{ alignSelf: "flex-start" }}
           >
             {sideImages.map((img, i) => (
-              <div
+              <a
+                href={img.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 key={i}
-                className="bg-[#1a1a1a] rounded-xl overflow-hidden shadow-md flex flex-col border border-gray-800"
+                className="bg-[#1a1a1a] rounded-xl overflow-hidden shadow-md flex flex-col border border-gray-800 hover:shadow-lg transition"
+                style={{ textDecoration: "none" }}
               >
                 <img
-                  src={img.url}
-                  alt={img.alt}
-                  className="w-full h-28 sm:h-40 object-cover"
+                  src={img.image}
+                  alt={img.name || "Promotion"}
+                  className="w-full h-40 sm:h-40 object-cover"
                 />
-                <div className="p-2 sm:p-4 flex-1 flex items-end">
-                  <span className="text-cyan-400 text-xs font-semibold">
-                    {img.caption}
-                  </span>
-                </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
-        <HorizontalAd
-          dataAdFormat="auto"
-          dataFullWidthResponsive={true}
-          // className="h-96"
-        />
+        <HorizontalAd dataAdFormat="auto" dataFullWidthResponsive={true} />
       </div>
-
       {/* Hide scrollbar in all browsers */}
       <style jsx global>{`
         .scrollbar-hide {
