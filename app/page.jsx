@@ -12,6 +12,7 @@ import WhatWeDo from "./components/WhatWeDo";
 import TechStackShowcase from "./components/TechStackShowcase";
 import WhyChooseUs from "./components/WhyChooseUs";
 import CompanyBanner from "./components/CompanyBanner";
+import OurRecentCreations from "./components/OurRecentCreations";
 
 const Page = () => {
   return (
@@ -27,6 +28,8 @@ const Page = () => {
         <TechStackShowcase />
 
         <WhyChooseUs />
+
+        <OurRecentCreations/>
 
         <CompanyBanner />
 

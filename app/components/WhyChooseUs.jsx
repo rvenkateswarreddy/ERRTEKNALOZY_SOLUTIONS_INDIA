@@ -27,7 +27,7 @@ const points = [
 
 const WhyChooseUs = () => {
   return (
-    <section className=" text-white pb-10 px-6 sm:px-10 lg:px-24">
+    <section className="bg-gradient-to-br from-[#061a2e] via-[#0f1624] to-[#202a44] text-white pb-10 px-6 sm:px-10 lg:px-24">
       <div className="max-w-7xl mx-auto text-center mb-16">
         <h2 className="text-4xl sm:text-5xl font-bold mb-4 leading-tight">
           Discover the Advantage.

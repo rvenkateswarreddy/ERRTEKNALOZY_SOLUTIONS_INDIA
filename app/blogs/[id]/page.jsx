@@ -3,6 +3,34 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 
+// Utility: Format Firestore Timestamp or string to readable date
+function formatDate(dateInput) {
+  if (!dateInput) return "";
+  if (typeof dateInput === "string") return dateInput;
+  if (typeof dateInput === "object" && typeof dateInput.seconds === "number") {
+    const date = new Date(dateInput.seconds * 1000);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    });
+  }
+  if (dateInput instanceof Date) {
+    return dateInput.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    });
+  }
+  return String(dateInput);
+}
+
 // Dummy AdComponent implementation.
 function AdComponent({
   dataAdFormat,
@@ -91,13 +119,16 @@ export default function BlogPost({ params }) {
     setName("");
   };
 
-  // FIX: decodeURIComponent for the blog param for proper parsing
+  // decodeURIComponent for the blog param for proper parsing
   let post = null;
   try {
     post = blogParam && JSON.parse(decodeURIComponent(blogParam));
   } catch (e) {
     post = null;
   }
+
+  // Log the post for debugging
+  console.log("BlogPost post:", post);
 
   if (!post) {
     return (
@@ -157,7 +188,9 @@ export default function BlogPost({ params }) {
                   <p className="text-sm font-medium">
                     By {post.author || "John Doe"}
                   </p>
-                  <p className="text-xs text-gray-400">{post.date}</p>
+                  <p className="text-xs text-gray-400">
+                    {formatDate(post.date)}
+                  </p>
                 </div>
               </div>
               <span className="ml-auto text-gray-400 text-sm">
@@ -185,11 +218,18 @@ export default function BlogPost({ params }) {
           {/* Image on the right */}
           <div className="lg:w-1/3 lg:sticky lg:self-start lg:top-20">
             <div className="rounded-xl overflow-hidden shadow-2xl border border-gray-800">
-              <img
-                src={post.image}
-                alt={post.title}
-                className="w-full h-auto object-cover"
-              />
+              {/* Use a plain img tag for client-side image rendering */}
+              {post.image && (
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  width={800}
+                  height={400}
+                  className="w-full h-auto object-cover rounded-xl"
+                  style={{ display: "block" }}
+                  loading="eager"
+                />
+              )}
             </div>
           </div>
         </div>
@@ -243,7 +283,7 @@ export default function BlogPost({ params }) {
                 <h3 className="text-lg font-medium mb-4">Leave a comment</h3>
                 <textarea
                   id="comment"
-                  rows="2"
+                  rows={2}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Write your comment here..."

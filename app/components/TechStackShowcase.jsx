@@ -53,7 +53,7 @@ const techRowTwo = [
 
 const TechStackShowcase = () => {
   return (
-    <section className="text-white py-20 px-4 sm:px-8 lg:px-0">
+    <section className=" bg-gradient-to-br from-[#061a2e] via-[#0f1624] to-[#202a44] text-white py-20 px-4 sm:px-8 lg:px-0">
       {/* Header */}
       <div className="max-w-7xl mx-auto text-center mb-16">
         <h2 className="text-4xl sm:text-5xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-orange-400">

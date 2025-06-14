@@ -18,7 +18,7 @@ const CompanyBanner = () => {
   }
 
   return (
-    <section className="relative bg-white text-gray-900 py-20 px-4 sm:px-8 lg:px-24 overflow-hidden">
+    <section className="relative bg-white text-gray-900 border rounded-4xl py-20 px-4 sm:px-8 lg:px-24 overflow-hidden">
       {/* Watermark Background */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {watermarkGrid.map((pos, i) => (
