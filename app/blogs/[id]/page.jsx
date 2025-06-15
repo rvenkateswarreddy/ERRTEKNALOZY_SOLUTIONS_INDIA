@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 
 // Dummy AdComponent implementation.
 function AdComponent({
@@ -25,6 +25,7 @@ function AdComponent({
 export default function BlogPost({ params }) {
   const searchParams = useSearchParams();
   const blogParam = searchParams.get("blog");
+   const [post, setPost] = useState(null);
 
   // Sample related posts data
   const relatedPosts = [
@@ -92,13 +93,19 @@ export default function BlogPost({ params }) {
   };
 
   // FIX: decodeURIComponent for the blog param for proper parsing
-  let post = null;
-  try {
-    post = blogParam && JSON.parse(decodeURIComponent(blogParam));
-  } catch (e) {
-    post = null;
-  }
+  useEffect(() => {
+    let parsedPost = null;
+    try {
+      parsedPost = blogParam && JSON.parse(decodeURIComponent(blogParam));
+    } catch (e) {
+      parsedPost = null;
+    }
+    setPost(parsedPost);
+    // Log the post data
+   
+  }, [blogParam]);
 
+console.log("Post data:", post);
   if (!post) {
     return (
       <div className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] min-h-screen text-white py-20 px-4 sm:px-6">
@@ -111,7 +118,26 @@ export default function BlogPost({ params }) {
       </div>
     );
   }
+function formatDate(date) {
+  if (!date) return "";
+  if (typeof date === "string") {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
 
+  // Firestore timestamp
+  if (typeof date === "object" && date.seconds) {
+    return new Date(date.seconds * 1000).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
+  return "";
+}
   return (
     <div className="bg-[#0a0a0a] min-h-screen text-white py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
@@ -157,7 +183,7 @@ export default function BlogPost({ params }) {
                   <p className="text-sm font-medium">
                     By {post.author || "John Doe"}
                   </p>
-                  <p className="text-xs text-gray-400">{post.date}</p>
+                  <p className="text-xs text-gray-400">{formatDate(post.date)}</p>
                 </div>
               </div>
               <span className="ml-auto text-gray-400 text-sm">
