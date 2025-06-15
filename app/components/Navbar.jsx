@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { FiHome, FiMail, FiMenu, FiX } from "react-icons/fi";
-import { FaBlogger, FaUserCheck } from "react-icons/fa";
+import { FiBriefcase, FiHome, FiMail, FiMenu, FiX } from "react-icons/fi";
+import { FaBlogger, FaLaptopCode, FaUserCheck } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "../../FirebaseConfig";
@@ -49,6 +49,8 @@ export default function Navbar() {
     { id: "/", label: "Home", icon: <FiHome /> },
     { id: "/blogs", label: "Blogs", icon: <FaBlogger /> },
     { id: "/about", label: "About", icon: <FaUserCheck /> },
+    { id: "/career", label: "Careers", icon: <FiBriefcase  /> },
+    { id: "/digitalLab", label: "Digital Lab", icon: <FaLaptopCode /> },
     { id: "/contactUs", label: "Contact", icon: <FiMail /> },
   ];
 
@@ -68,7 +70,7 @@ export default function Navbar() {
       </AnimatePresence>
 
       <header className="fixed top-0 inset-x-0 z-50 bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] shadow-md transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between h-16 md:h-20 transition-all duration-300">
+        <div className="max-w-8xl mx-auto px-4 sm:px-8 flex items-center justify-between h-16 md:h-20 transition-all duration-300">
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden bg-white shadow-lg border-2 border-fuchsia-400 group-hover:scale-105 transition-transform">

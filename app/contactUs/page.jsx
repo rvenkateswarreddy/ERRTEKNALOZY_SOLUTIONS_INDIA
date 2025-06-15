@@ -4,6 +4,7 @@ import { FiMail, FiSend, FiPhone, FiMapPin } from "react-icons/fi";
 import Image from "next/image";
 import VerticalAd from "../components/VerticalAd";
 import HorizontalAd from "../components/HorizontalAd";
+import Contact3D from "../components/Contact3D";
 
 const ContactPage = () => {
   return (
