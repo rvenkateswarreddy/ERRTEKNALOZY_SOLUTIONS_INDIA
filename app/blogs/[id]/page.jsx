@@ -1,7 +1,35 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
+
+// Utility: Format Firestore Timestamp or string to readable date
+function formatDate(dateInput) {
+  if (!dateInput) return "";
+  if (typeof dateInput === "string") return dateInput;
+  if (typeof dateInput === "object" && typeof dateInput.seconds === "number") {
+    const date = new Date(dateInput.seconds * 1000);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    });
+  }
+  if (dateInput instanceof Date) {
+    return dateInput.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    });
+  }
+  return String(dateInput);
+}
 
 // Dummy AdComponent implementation.
 function AdComponent({
@@ -25,7 +53,7 @@ function AdComponent({
 export default function BlogPost({ params }) {
   const searchParams = useSearchParams();
   const blogParam = searchParams.get("blog");
-   const [post, setPost] = useState(null);
+  const [post, setPost] = useState(null);
 
   // Sample related posts data
   const relatedPosts = [
@@ -101,11 +129,11 @@ export default function BlogPost({ params }) {
       parsedPost = null;
     }
     setPost(parsedPost);
-    // Log the post data
-   
   }, [blogParam]);
 
-console.log("Post data:", post);
+  // Log the post data (can be commented out in production)
+  // console.log("Post data:", post);
+
   if (!post) {
     return (
       <div className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] min-h-screen text-white py-20 px-4 sm:px-6">
@@ -118,26 +146,7 @@ console.log("Post data:", post);
       </div>
     );
   }
-function formatDate(date) {
-  if (!date) return "";
-  if (typeof date === "string") {
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  }
 
-  // Firestore timestamp
-  if (typeof date === "object" && date.seconds) {
-    return new Date(date.seconds * 1000).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  }
-  return "";
-}
   return (
     <div className="bg-[#0a0a0a] min-h-screen text-white py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
@@ -211,11 +220,18 @@ function formatDate(date) {
           {/* Image on the right */}
           <div className="lg:w-1/3 lg:sticky lg:self-start lg:top-20">
             <div className="rounded-xl overflow-hidden shadow-2xl border border-gray-800">
-              <img
-                src={post.image}
-                alt={post.title}
-                className="w-full h-auto object-cover"
-              />
+              {/* Use a plain img tag for client-side image rendering */}
+              {post.image && (
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  width={800}
+                  height={400}
+                  className="w-full h-auto object-cover rounded-xl"
+                  style={{ display: "block" }}
+                  loading="eager"
+                />
+              )}
             </div>
           </div>
         </div>
@@ -269,7 +285,7 @@ function formatDate(date) {
                 <h3 className="text-lg font-medium mb-4">Leave a comment</h3>
                 <textarea
                   id="comment"
-                  rows="2"
+                  rows={2}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Write your comment here..."

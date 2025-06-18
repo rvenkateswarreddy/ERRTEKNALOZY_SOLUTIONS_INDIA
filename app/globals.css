@@ -24,33 +24,34 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+.marquee {
+  animation: marquee 20s linear infinite;
+  will-change: transform;
+}
 
-@layer utilities {
-  @keyframes marquee {
-    0% {
-      transform: translateX(0%);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
+.marquee2 {
+  animation: marquee2 25s linear infinite;
+  will-change: transform;
+}
+
+.group:hover .pause-on-hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
   }
-
-  @keyframes marquee2 {
-    0% {
-      transform: translateX(-50%);
-    }
-    100% {
-      transform: translateX(0%);
-    }
+  100% {
+    transform: translateX(-50%);
   }
+}
 
-  .animate-marquee {
-    animation: marquee 25s linear infinite;
-    width: 200%;
+@keyframes marquee2 {
+  0% {
+    transform: translateX(0);
   }
-
-  .animate-marquee2 {
-    animation: marquee2 25s linear infinite;
-    width: 200%;
+  100% {
+    transform: translateX(-50%);
   }
 }

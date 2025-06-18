@@ -7,7 +7,7 @@ import { GiArrowsShield } from "react-icons/gi";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import HorizontalAd from "../components/HorizontalAd";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { db } from "@/FirebaseConfig";
+import { db } from "../../FirebaseConfig";
 
 // Utility: convert Firestore timestamp or ISO string to formatted date
 function formatDate(date) {
