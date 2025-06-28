@@ -28,8 +28,8 @@ const HorizontalAd = () => {
       className="adsbygoogle"
       ref={adRef}
       style={{ display: "block", height: "180px" }}
-      data-ad-client="ca-pub-9174140322510860"
-      data-ad-slot="7368053194"
+      data-ad-client="ca-pub-917414d2354450322510860"
+      data-ad-slot="723543680623553194"
       data-ad-format="auto"
       data-full-width-responsive="true"
     />

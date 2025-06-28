@@ -18,20 +18,20 @@ function cn(...classes: any[]) {
 
 const navLinks = [
   { id: "/", label: "Home" },
-  {
-    id: "/solutions",
-    label: "Solutions",
-    subLinks: [
-      { id: "/solutions/enterprise", label: "Enterprise Solutions" },
-      { id: "/solutions/smb", label: "SMB Solutions" },
-      { id: "/solutions/startups", label: "Startup Programs" }
-    ]
-  },
+  // {
+  //   id: "/solutions",
+  //   label: "Solutions",
+  //   subLinks: [
+  //     { id: "/solutions/enterprise", label: "Enterprise Solutions" },
+  //     { id: "/solutions/smb", label: "SMB Solutions" },
+  //     { id: "/solutions/startups", label: "Startup Programs" }
+  //   ]
+  // },
   { id: "/blogs", label: "Blogs" },
   { id: "/about", label: "About Us" },
-  { id: "/careers", label: "Careers" },
+  { id: "/career", label: "Careers" },
   {
-    id: "/labs",
+    id: "/digitalLab",
     label: "Digital Labs",
     subLinks: [
       { id: "/labs/research", label: "Research" },
@@ -39,7 +39,8 @@ const navLinks = [
       { id: "/labs/prototyping", label: "Prototyping" }
     ]
   },
-  { id: "/contactUs", label: "Contact" }
+  { id: "/contactUs", label: "Contact" },
+  { id: "/compilers", label: "Compilers" }
 ];
 
 export default function Navbar() {

@@ -2,8 +2,9 @@
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { AuthProvider } from "../context/AuthContext";
 
-export default function LayoutWrapper({ children }) {
+export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   // Hide navbar for /blogs and all /blogs/* routes
@@ -11,10 +12,10 @@ export default function LayoutWrapper({ children }) {
   const mainClassName = `${!hideNavbar ? "pt-16 md:pt-20" : ""} min-h-screen`;
 
   return (
-    <>
+   <AuthProvider>
       {!hideNavbar && <Navbar />}
       <main className={mainClassName}>{children}</main>
       <Footer />
-    </>
+    </AuthProvider>
   );
 }
