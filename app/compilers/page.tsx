@@ -74,6 +74,7 @@ export default function OnlineCompiler() {
   }
 
   return (
+    <div className="py-10 pb-20">
     <div className="max-w-4xl mx-auto bg-[#101828] rounded-lg p-6 shadow-lg text-white">
       <div className="mb-4 flex flex-col md:flex-row md:items-center gap-3">
         <label className="font-bold">Language:</label>
@@ -126,6 +127,7 @@ export default function OnlineCompiler() {
         <br />
         <b>Tip:</b> Enter input in "Standard Input" if your code expects it (e.g., via <code>input()</code> in Python).
       </div>
+    </div>
     </div>
   );
 }

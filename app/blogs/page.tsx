@@ -1,11 +1,8 @@
 "use client";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { FaFireAlt } from "react-icons/fa";
-import { MdOutlineCategory } from "react-icons/md";
-import { GiArrowsShield } from "react-icons/gi";
-import { AiOutlineArrowRight } from "react-icons/ai";
-import HorizontalAd from "../components/HorizontalAd";
+import { SlArrowRight } from "react-icons/sl";
+import { GrAnnounce } from "react-icons/gr";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../../FirebaseConfig";
 
@@ -17,6 +14,7 @@ interface BlogPost {
   category: string;
   trending?: boolean;
   date: string | { seconds: number };
+  image?: string;
   [key: string]: any;
 }
 
@@ -47,42 +45,48 @@ const formatDate = (date: string | { seconds: number } | undefined): string => {
   return "";
 };
 
-// --- Main Component ---
+const getDateObj = (date: string | { seconds: number }) => {
+  if (typeof date === "string") return new Date(date);
+  if (typeof date === "object" && date.seconds) return new Date(date.seconds * 1000);
+  return new Date();
+};
+
+const isNew = (date: string | { seconds: number }) => {
+  const now = new Date();
+  const postDate = getDateObj(date);
+  const diffMs = now.getTime() - postDate.getTime();
+  return diffMs <= 24 * 60 * 60 * 1000; // 24 hours in ms
+};
+
+// Split array into two columns, even distribution, always fill left column first for odd number
+const splitTwoColumns = <T,>(arr: T[]): [T[], T[]] => {
+  const mid = Math.ceil(arr.length / 2);
+  return [arr.slice(0, mid), arr.slice(mid)];
+};
+
 const BlogPosts: React.FC = () => {
-  // State
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [sideImages, setSideImages] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
-  const [isCategoriesSticky, setIsCategoriesSticky] = useState(false);
-
-  // Refs
-  const categoryRefs = useRef<Record<string, React.RefObject<HTMLDivElement>>>({});
-  const trendingRef = useRef<HTMLDivElement | null>(null);
-  const categoriesBarRef = useRef<HTMLDivElement | null>(null);
-  const leftColRef = useRef<HTMLDivElement | null>(null);
 
   // --- Data Fetching ---
   useEffect(() => {
     let isMounted = true;
     async function fetchData() {
       try {
-        const [blogsSnapshot, promoSnapshot] = await Promise.all([
-          getDocs(query(collection(db, "blogs"), orderBy("date", "desc"))),
-          getDocs(query(collection(db, "promotions"), orderBy("createdAt", "desc"))),
-        ]);
-        if (!isMounted) return;
+        const blogsSnapshot = await getDocs(query(collection(db, "blogs-testing"), orderBy("date", "desc")));
         const blogsData: BlogPost[] = [];
         blogsSnapshot.forEach((doc) => blogsData.push({ ...doc.data(), id: doc.id } as BlogPost));
-        const promoData: Promotion[] = [];
-        promoSnapshot.forEach((doc) => promoData.push({ ...doc.data(), id: doc.id } as Promotion));
+        let promoData: Promotion[] = [];
+        try {
+          const promoSnapshot = await getDocs(query(collection(db, "promotions"), orderBy("createdAt", "desc")));
+          promoSnapshot.forEach((doc) => promoData.push({ ...doc.data(), id: doc.id } as Promotion));
+        } catch (e) {}
+        if (!isMounted) return;
         setBlogPosts(blogsData);
         setSideImages(promoData);
       } catch (err) {
-        // TODO: Error boundary/logging
-        // Optionally show UI error state
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -93,414 +97,227 @@ const BlogPosts: React.FC = () => {
     };
   }, []);
 
-  // --- Responsive ---
-  useEffect(() => {
-    const handleResize = () => setIsLargeScreen(window.innerWidth >= 1024);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // --- Derived Data ---
-  const categories = useMemo(
-    () => [
-      "All",
-      ...Array.from(new Set(blogPosts.map((post) => post.category))),
-    ],
-    [blogPosts]
-  );
-
+  // --- Filtered Data ---
   const filteredTrending = useMemo(
     () =>
       blogPosts.filter(
         (post) =>
           post.trending &&
-          (selectedCategory === "All" || post.category === selectedCategory) &&
           (post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             post.summary?.toLowerCase().includes(searchTerm.toLowerCase()))
       ),
-    [blogPosts, selectedCategory, searchTerm]
+    [blogPosts, searchTerm]
   );
 
-  const filteredByCategory = useMemo(() => {
-    return blogPosts
-      .filter(
+  // --- Group All Posts by Category (including trending) ---
+  const filteredOther = useMemo(
+    () =>
+      blogPosts.filter(
         (post) =>
-          !post.trending &&
-          (selectedCategory === "All" || post.category === selectedCategory) &&
-          (post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            post.summary?.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-      .reduce<Record<string, BlogPost[]>>((acc, post) => {
-        acc[post.category] = acc[post.category] || [];
-        acc[post.category].push(post);
-        return acc;
-      }, {});
-  }, [blogPosts, selectedCategory, searchTerm]);
-
-  // --- Sticky/Scroll Highlight Logic ---
-  useEffect(() => {
-    if (!isLargeScreen) return;
-    const leftCol = leftColRef.current;
-    if (!leftCol) return;
-
-    let ticking = false;
-    const handleScroll = () => {
-      if (!isCategoriesSticky) return;
-
-      let sectionPositions: Array<{ category: string; ref: any; top: number }> = [];
-      if (trendingRef.current && filteredTrending.length > 0) {
-        sectionPositions.push({
-          category: "Trending",
-          ref: trendingRef,
-          top: trendingRef.current.getBoundingClientRect().top,
-        });
-      }
-      if (selectedCategory === "All") {
-        Object.keys(filteredByCategory).forEach((cat) => {
-          const ref = categoryRefs.current[cat];
-          if (ref) {
-            sectionPositions.push({
-              category: cat,
-              ref,
-              top: ref.current ? ref.current.getBoundingClientRect().top : 0,
-            });
-          }
-        });
-      } else {
-        const ref = categoryRefs.current[selectedCategory];
-        if (ref) {
-          sectionPositions.push({
-            category: selectedCategory,
-            ref,
-            top: ref.current ? ref.current.getBoundingClientRect().top : 0,
-          });
-        }
-      }
-
-      let current = "All";
-      for (let i = 0; i < sectionPositions.length; i++) {
-        const { category, ref } = sectionPositions[i];
-        const rect = ref.current.getBoundingClientRect();
-        if (
-          rect.top -
-            (categoriesBarRef.current?.getBoundingClientRect().bottom || 0) <=
-          0
-        ) {
-          current = category;
-        }
-      }
-      if (current === "Trending") {
-        setSelectedCategory("All");
-      } else if (current && current !== selectedCategory) {
-        setSelectedCategory(current);
-      }
-    };
-
-    const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    leftCol.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      leftCol.removeEventListener("scroll", onScroll);
-    };
-  }, [isLargeScreen, isCategoriesSticky, selectedCategory, filteredByCategory, filteredTrending.length]);
-
-  // --- Sticky Detection for Categories Bar ---
-  useEffect(() => {
-    if (!isLargeScreen) return;
-    const handleWindowScroll = () => {
-      if (!categoriesBarRef.current) return;
-      const rect = categoriesBarRef.current.getBoundingClientRect();
-      setIsCategoriesSticky(rect.top <= 0);
-    };
-    window.addEventListener("scroll", handleWindowScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleWindowScroll);
-  }, [isLargeScreen]);
-
-  // --- Scroll to Section on Category Click ---
-  const handleCategoryClick = useCallback(
-    (cat: string) => {
-      setSelectedCategory(cat);
-      if (cat === "All") {
-        if (isLargeScreen && leftColRef.current) {
-          leftColRef.current.scrollTo({ top: 0, behavior: "smooth" });
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      } else if (categoryRefs.current[cat]) {
-        const offset = (categoriesBarRef.current?.offsetHeight || 0) + 16;
-        let top = 0;
-        if (isLargeScreen && leftColRef.current) {
-          top =
-            leftColRef.current.scrollTop +
-            categoryRefs.current[cat].current.getBoundingClientRect().top -
-            leftColRef.current.getBoundingClientRect().top -
-            offset;
-          leftColRef.current.scrollTo({ top, behavior: "smooth" });
-        } else {
-          top =
-            window.scrollY +
-            categoryRefs.current[cat].current.getBoundingClientRect().top -
-            offset;
-          window.scrollTo({ top, behavior: "smooth" });
-        }
-      }
-    },
-    [isLargeScreen]
+          post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.summary?.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [blogPosts, searchTerm]
   );
 
-  // --- Attach refs dynamically to each category section ---
-  const getCatRef = (cat: string) => {
-    if (!categoryRefs.current[cat]) {
-      categoryRefs.current[cat] = React.createRef<HTMLDivElement>();
-    }
-    return categoryRefs.current[cat];
-  };
+  // --- Split Trending: always fill left column first, rest in right
+  const trendingColumns = splitTwoColumns(filteredTrending);
 
-  // --- Loading State ---
+  // --- Group All Posts by Category (trending posts will appear in both trending and their category) ---
+  const categoryMap: { [cat: string]: BlogPost[] } = {};
+  filteredOther.forEach((post) => {
+    if (!categoryMap[post.category]) categoryMap[post.category] = [];
+    categoryMap[post.category].push(post);
+  });
+
+  // --- Loading Spinner (modern) ---
   if (loading) {
     return (
-      <section className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-2 sm:px-4 text-white">
-        <div className="max-w-7xl mx-auto flex items-center justify-center h-40">
-          <span className="text-lg text-cyan-400" role="status" aria-live="polite">Loading...</span>
+      <section className="bg-white py-24 px-2 sm:px-4 text-black min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full border-8 border-blue-200 border-t-blue-500 h-20 w-20"></div>
+          <span className="text-lg font-bold text-blue-600">Loading Blogs...</span>
         </div>
       </section>
     );
   }
 
-  // --- Render ---
   return (
     <section
-      className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-2 sm:px-4 text-white"
+      className="bg-white py-10 sm:px-4 text-black min-h-screen w-full"
       aria-labelledby="blog-posts-heading"
     >
-      <div className="max-w-7xl mx-auto">
-        {/* Main Heading */}
-        <h2
-          id="blog-posts-heading"
-          className="text-3xl sm:text-5xl font-extrabold text-center mb-4 bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-orange-400 bg-clip-text text-transparent flex items-center justify-center gap-3"
-        >
-          <FaFireAlt className="text-fuchsia-400 animate-bounce" />
-          Dive Into Inspiring Ideas & Stories!
-        </h2>
-        <p className="text-center text-base sm:text-lg text-gray-300 mb-8 sm:mb-10">
-          Discover handpicked articles, tips, and insights to spark your curiosity.
-        </p>
+      <div className="max-w-6xl mx-auto w-full flex flex-col-reverse lg:flex-row gap-0 lg:gap-12 relative">
+        {/* Main Content Centered on md/sm, left on lg */}
+        <div className="w-full lg:w-[66%] mx-auto">
+          {/* Main Heading */}
+          <h2
+            id="blog-posts-heading"
+            className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-3 flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-700 bg-clip-text text-transparent"
+          >
+            Trending Voices & Stories!
+          </h2>
+          <p className="text-center text-sm sm:text-base md:text-lg text-gray-600 mb-6">
+            Explore the latest trending and curated articles, tips, and insights.
+          </p>
 
-        {/* Search box */}
-        <div className="flex items-center justify-center gap-2 mb-6 sm:mb-8">
-          <div className="relative w-full max-w-md">
-            <label htmlFor="blog-search" className="sr-only">
-              Search blog posts
-            </label>
-            <input
-              id="blog-search"
-              type="text"
-              placeholder="Search blog posts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-2 sm:pr-4 py-2 w-full rounded-lg bg-gray-800 border border-gray-700 text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-cyan-500 transition"
-              aria-label="Search blog posts"
-              autoComplete="off"
-            />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden>
-              <svg width="18" height="18" fill="none">
-                <path
-                  d="M12.5 12.5L17 17M14 8.5A5.5 5.5 0 1 1 3 8.5a5.5 5.5 0 0 1 11 0Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
+          {/* Search box */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <div className="relative w-full max-w-md">
+              <label htmlFor="blog-search" className="sr-only">
+                Search blog posts
+              </label>
+              <input
+                id="blog-search"
+                type="text"
+                placeholder="Search blog posts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-2 sm:pr-4 py-2 w-full rounded-lg bg-blue-50 border border-blue-200 text-black text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                aria-label="Search blog posts"
+                autoComplete="off"
+              />
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400" aria-hidden>
+                <svg width="18" height="18" fill="none">
+                  <path
+                    d="M12.5 12.5L17 17M14 8.5A5.5 5.5 0 1 1 3 8.5a5.5 5.5 0 0 1 11 0Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          {/* Trending Table */}
+          <div className="rounded-md overflow-hidden mb-0 w-full ">
+            <div className="bg-blue-600 px-4 py-2 flex items-center">
+              <GrAnnounce className="text-white text-lg mr-2" />
+              <span className="uppercase text-white font-bold tracking-wide text-base sm:text-lg" style={{letterSpacing: "0.06em"}}>
+                Trending
+              </span>
+            </div>
+            <div className="border-b border-black/70"></div>
+            <div className="w-full bg-blue-200">
+              <div className="grid grid-cols-1 sm:grid-cols-2">
+                {trendingColumns.map((col, colIdx) => (
+                  <div key={colIdx} className="divide-y divide-blue-100">
+                    {col.map((post) => (
+                      <Link
+                        key={post.id}
+                        href={{
+                          pathname: `/blogs/${post.id}`,
+                          query: { title: post.title },
+                        }}
+                        className="flex items-start gap-2 text-base sm:text-[1.05rem] group px-1 py-2"
+                        style={{ fontWeight: 500, color: "#1e293b" }}
+                      >
+                        <span className="py-1">
+                          <SlArrowRight className="text-blue-400 text-base shrink-0 " />
+                        </span>
+                        <span
+                          className="truncate-2-lines group-hover:underline group-hover:text-blue-700 transition"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            maxHeight: "3.2em",
+                            lineHeight: "1.6em",
+                            wordBreak: "break-word"
+                          }}
+                        >{post.title}</span>
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Black line below trending */}
+          <div className="border-b border-black my-3"></div>
+
+          {/* Other Blogs by Category (includes trending posts as well) */}
+          <div className="rounded-md overflow-hidden w-full">
+            <div className="border-b border-black/70"></div>
+            {Object.keys(categoryMap).length === 0 ? (
+              <div className="col-span-2 text-center py-10 text-gray-400 text-base">
+                No blogs found.
+              </div>
+            ) : (
+              Object.entries(categoryMap).map(([category, posts]) => {
+                // Split posts into two columns, first column has Math.ceil(n/2), second column has Math.floor(n/2)
+                const [col1, col2] = splitTwoColumns(posts);
+                return (
+                  <div key={category} className="mb-8">
+                    {/* Category Name */}
+                    <div className="py-2 px-3 bg-blue-500 border-l-4 text-white font-semibold text-base sm:text-lg mb-2">
+                      {category}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2">
+                      {[col1, col2].map((col, colIdx) => (
+                        <div key={colIdx} className="divide-y divide-blue-100">
+                          {col.map((post) => (
+                            <Link
+                              key={post.id}
+                              href={{
+                                pathname: `/blogs/${post.id}`,
+                                query: { title: post.title },
+                              }}
+                              className="flex items-start gap-2 text-base sm:text-[1.05rem] px-2 py-3 group"
+                              style={{ fontWeight: 500, color: "#1e293b" }}
+                            >
+                              <SlArrowRight className="text-blue-400 text-base shrink-0" />
+                              {isNew(post.date) && (
+                                <span className="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full mr-2 mt-0.5 shrink-0" style={{ minWidth: "38px", textAlign: "center" }}>
+                                  New
+                                </span>
+                              )}
+                              {/* Title, two lines max, ... if overflow */}
+                              <span
+                                className="truncate-2-lines group-hover:underline flex-1"
+                                style={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  maxHeight: "3.2em",
+                                  lineHeight: "1.6em",
+                                  wordBreak: "break-word"
+                                }}
+                              >
+                                {post.title}
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
-        {/* Categories - sticky bar */}
-        <nav
-          ref={categoriesBarRef}
-          aria-label="Blog categories"
-          className="flex flex-wrap gap-2 sm:gap-3 justify-center mb-8 sm:mb-12 sticky top-0 z-30 py-2 backdrop-blur-md transition-all"
-          style={{
-            borderBottom: "1px solid rgba(34,211,238,0.07)",
-          }}
-        >
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => handleCategoryClick(cat)}
-              className={`flex items-center gap-1 px-2 sm:px-4 py-1 sm:py-2 rounded-full font-medium border-2 text-xs sm:text-base transition ${
-                selectedCategory === cat
-                  ? "bg-gradient-to-r from-fuchsia-500 to-cyan-500 border-transparent text-white shadow-lg"
-                  : "border-gray-700 text-cyan-300 hover:border-cyan-400 hover:text-white"
-              }`}
-              aria-current={selectedCategory === cat ? "page" : undefined}
-            >
-              <MdOutlineCategory className="text-cyan-400 text-sm sm:text-base" />
-              <span>{cat}</span>
-            </button>
-          ))}
-        </nav>
-
-        {/* Main grid: Left - posts, Right - images */}
-        <div className="lg:grid lg:grid-cols-3 gap-6 sm:gap-12 flex flex-col">
-          {/* LEFT COLUMN */}
-          <div
-            ref={leftColRef}
-            className={`
-              lg:col-span-2 flex flex-col gap-6 sm:gap-10
-              ${!isLargeScreen ? "w-full max-w-xl mx-auto" : ""}
-              ${isLargeScreen ? "h-[100vh] overflow-y-auto pr-2 scrollbar-hide" : ""}
-            `}
-            style={{
-              scrollBehavior: "smooth",
-            }}
-          >
-            {/* Trending Now */}
-            {filteredTrending.length > 0 && (
-              <section
-                ref={trendingRef}
-                aria-label="Trending Now"
-                className="rounded-xl bg-gradient-to-r from-fuchsia-900/70 via-cyan-900/50 to-orange-700/30 p-3 sm:p-6 shadow-md border border-fuchsia-500/30 mb-4 sm:mb-8"
-              >
-                <h3 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-6 flex items-center gap-2 text-orange-300">
-                  <FaFireAlt className="text-fuchsia-400 animate-pulse" />
-                  Trending Now
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 lg:gap-3">
-                  {filteredTrending.map((post) => (
-                    <Link
-                      key={post.id}
-                      href={{
-                        pathname: `/blogs/${post.id}`,
-                        query: { blog: encodeURIComponent(JSON.stringify(post)) },
-                      }}
-                      className="flex items-center gap-2 rounded-lg p-2 sm:p-4 transition group lg:p-1"
-                      aria-label={`Trending post: ${post.title}`}
-                    >
-                      <GiArrowsShield className="text-fuchsia-400 text-lg sm:text-xl shrink-0" />
-                      <span className="text-xs sm:text-lg font-semibold text-orange-200 ">
-                        {post.title}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Category-wise Posts */}
-            {selectedCategory === "All" ? (
-              Object.keys(filteredByCategory).map((cat) => (
-                <section
-                  key={cat}
-                  ref={getCatRef(cat)}
-                  aria-labelledby={`cat-${cat}`}
-                  className="bg-[#181d2a] rounded-xl shadow-lg p-3 sm:p-6 border border-cyan-800/30 mb-4 sm:mb-8"
-                >
-                  <h3
-                    id={`cat-${cat}`}
-                    className="text-base sm:text-xl font-bold text-cyan-300 mb-2 sm:mb-4 flex items-center gap-2"
-                  >
-                    <MdOutlineCategory className="text-cyan-400 text-base sm:text-xl" />
-                    {cat}
-                  </h3>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
-                    {filteredByCategory[cat].length === 0 ? (
-                      <li className="text-gray-400 text-center py-4 sm:py-8 font-semibold text-xs sm:text-base ">
-                        No posts found.
-                      </li>
-                    ) : (
-                      filteredByCategory[cat].map((post) => (
-                        <li
-                          key={post.id}
-                          className="flex items-center gap-1 sm:gap-2  rounded-md p-2 sm:p-4  transition group lg:p-0"
-                        >
-                          <AiOutlineArrowRight className="text-cyan-400 text-base sm:text-lg shrink-0" />
-                          <Link
-                            href={{
-                              pathname: `/blogs/${post.id}`,
-                              query: { blog: encodeURIComponent(JSON.stringify(post)) },
-                            }}
-                            className="text-xs sm:text-base font-semibold text-cyan-100 hover:underline hover:text-fuchsia-400 transition lg:text-sm"
-                            aria-label={`Read post: ${post.title}`}
-                          >
-                            {post.title}
-                          </Link>
-                          <span className="text-[10px] text-gray-400 ml-2">
-                            {formatDate(post.date)}
-                          </span>
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                </section>
-              ))
-            ) : (
-              <section
-                ref={getCatRef(selectedCategory)}
-                aria-labelledby={`cat-${selectedCategory}`}
-                className="bg-[#181d2a] rounded-xl shadow-lg p-3 sm:p-6 border border-cyan-800/30 mb-4 sm:mb-8"
-              >
-                <h3 className="text-base sm:text-xl font-bold text-cyan-300 mb-2 sm:mb-4 flex items-center gap-2">
-                  <MdOutlineCategory className="text-cyan-400 text-base sm:text-xl" />
-                  {selectedCategory}
-                </h3>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4">
-                  {filteredByCategory[selectedCategory]?.length === 0 ? (
-                    <li className="text-gray-400 text-center py-4 sm:py-8 font-semibold text-xs sm:text-base">
-                      No posts found.
-                    </li>
-                  ) : (
-                    filteredByCategory[selectedCategory]?.map((post) => (
-                      <li
-                        key={post.id}
-                        className="flex items-center gap-1 sm:gap-2 bg-[#161a23] rounded-md p-2 sm:p-4 border border-cyan-700/40 hover:border-cyan-400 transition group"
-                      >
-                        <AiOutlineArrowRight className="text-cyan-400 text-base sm:text-lg shrink-0" />
-                        <Link
-                          href={{
-                            pathname: `/blogs/${post.id}`,
-                            query: { blog: encodeURIComponent(JSON.stringify(post)) },
-                          }}
-                          className="text-xs sm:text-base font-semibold text-cyan-100 hover:underline hover:text-fuchsia-400 transition "
-                          aria-label={`Read post: ${post.title}`}
-                        >
-                          {post.title}
-                        </Link>
-                        <span className="text-[10px] text-gray-400 ml-2">
-                          {formatDate(post.date)}
-                        </span>
-                      </li>
-                    ))
-                  )}
-                </ul>
-              </section>
-            )}
-          </div>
-
-          {/* RIGHT COLUMN: Side Images */}
+        {/* Promotions (hidden on md/sm, show only on lg+) */}
+        <div className="hidden lg:block lg:w-[34%] lg:pl-4 pt-20">
           <aside
-            className="lg:col-span-1 hidden lg:flex flex-col gap-4 sm:gap-8 h-[100vh] sticky top-[106px]"
-            style={{ alignSelf: "flex-start" }}
+            className="flex flex-col gap-6 h-full sticky top-[106px]"
             aria-label="Promotions"
+            style={{ alignSelf: "flex-start" }}
           >
-            {sideImages.map((img, i) => (
+            {sideImages.map((img) => (
               <a
                 href={img.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 key={img.id}
-                className="bg-[#1a1a1a] rounded-xl overflow-hidden shadow-md flex flex-col border border-gray-800 hover:shadow-lg transition"
+                className="bg-blue-50 rounded-xl overflow-hidden shadow flex flex-col border border-blue-100 hover:shadow-lg transition"
                 style={{ textDecoration: "none" }}
                 aria-label={img.name || "Promotion"}
                 tabIndex={0}
@@ -508,7 +325,7 @@ const BlogPosts: React.FC = () => {
                 <img
                   src={img.image}
                   alt={img.name || "Promotion"}
-                  className="w-full h-40 sm:h-40 object-cover"
+                  className="w-full h-80 object-cover"
                   loading="lazy"
                   width={320}
                   height={160}
@@ -517,16 +334,24 @@ const BlogPosts: React.FC = () => {
             ))}
           </aside>
         </div>
-      
       </div>
-      {/* Hide scrollbar in all browsers */}
-      <style jsx global>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+      {/* Two line clamp utility */}
+      <style>{`
+        .truncate-2-lines {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-height: 3.2em;
+          line-height: 1.6em;
+          word-break: break-word;
         }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
+        @media (max-width: 1023px) {
+          .mx-auto {
+            margin-left: auto !important;
+            margin-right: auto !important;
+          }
         }
       `}</style>
     </section>

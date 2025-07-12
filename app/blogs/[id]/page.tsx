@@ -9,11 +9,12 @@ import {
   getDocs,
   doc,
   query,
-  where,
   orderBy,
   addDoc,
   serverTimestamp,
+  limit,
 } from "firebase/firestore";
+import { SlArrowRight } from "react-icons/sl";
 
 // --- Utility: Format Firestore Timestamp or string to readable date
 function formatDate(dateInput: any) {
@@ -55,7 +56,7 @@ function AdComponent({
 }) {
   return (
     <div
-      className={`relative w-full h-32 bg-gradient-to-r from-cyan-800 to-cyan-500 rounded-xl flex items-center justify-center shadow border border-gray-800 ${className}`}
+      className={`relative w-full h-32 bg-gradient-to-r from-cyan-800 to-cyan-500 rounded-xl flex items-center justify-center shadow border border-gray-200 ${className}`}
       style={{
         minHeight: "8rem",
         overflow: "hidden",
@@ -80,13 +81,120 @@ type User = {
   avatar: string;
 };
 
+type Promotion = {
+  id: string;
+  title?: string;
+  image: string;
+  url?: string;
+  description?: string;
+};
+
 // --- Replace this with your actual authentication logic (NextAuth, Firebase Auth, etc.)
 function useCurrentUser(): User | null {
-  // Dummy: replace with real authentication logic.
-  // Return null if not logged in, otherwise return user object.
-  // For example, use Firebase Auth: const user = firebase.auth().currentUser;
-  // return user ? { name: user.displayName, avatar: user.photoURL } : null;
   return null; // <--- Fix: implement your actual auth state here!
+}
+
+// --- Render a single content block
+function renderBlock(block: any, idx: number) {
+  switch (block.type) {
+    case "Heading":
+      return (
+        <h2
+          key={idx}
+          className="text-xl sm:text-2xl font-bold my-6 text-black lg:text-3xl"
+        >
+          {block.text}
+        </h2>
+      );
+    case "Subheading":
+      return (
+        <h3
+          key={idx}
+          className="text-xl sm:text-xl font-semibold my-4 text-black"
+        >
+          {block.text}
+        </h3>
+      );
+    case "Paragraph":
+      return (
+        <p
+          key={idx}
+          className="text-base sm:text-lg text-gray-800 my-3 leading-relaxed"
+        >
+          {block.text}
+        </p>
+      );
+    case "List":
+      return (
+        <ul
+          key={idx}
+          className="list-disc pl-6 my-3 text-base text-gray-900"
+        >
+          {block.items?.filter(Boolean).map((item: string, i: number) => (
+            <li key={i} className="mb-2">
+              {item}
+            </li>
+          ))}
+        </ul>
+      );
+    case "Table":
+      return (
+        <table
+          key={idx}
+          className="border-collapse w-full my-6 bg-white"
+        >
+          <thead>
+            <tr>
+              {(block.headers || []).map((header: string, h: number) => (
+                <th
+                  key={h}
+                  className="p-2 border border-blue-300 bg-blue-200 text-black font-semibold"
+                >
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {(block.rows || []).map((row: any, r: number) => (
+              <tr key={r}>
+                {(block.headers || []).map((header: string, c: number) => (
+                  <td
+                    key={c}
+                    className="p-2 border border-blue-200 text-black"
+                  >
+                    {row[header]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+    case "Image":
+      return block.url ? (
+        <img
+          key={idx}
+          src={block.url}
+          alt={block.alt}
+          className="max-w-full rounded-xl shadow-lg my-6"
+        />
+      ) : null;
+    case "Link":
+      return (
+        <a
+          key={idx}
+          href={block.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline font-medium text-base inline-block my-2"
+        >
+          {block.text}
+        </a>
+      );
+    default:
+      return null;
+  }
 }
 
 export default function BlogPostPage({ params }: { params: { id: string } }) {
@@ -96,12 +204,18 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
   const user = useCurrentUser();
 
   const [post, setPost] = useState<any>(null);
-  const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
+  const [recentPosts, setRecentPosts] = useState<any[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
-  const [relatedLoading, setRelatedLoading] = useState(true);
   const [commentsLoading, setCommentsLoading] = useState(true);
+  const [recentLoading, setRecentLoading] = useState(true);
+
+  const [promotions, setPromotions] = useState<Promotion[]>([]);
+  const [promoLoading, setPromoLoading] = useState(true);
+
+  const [trendingPosts, setTrendingPosts] = useState<any[]>([]);
+  const [trendingLoading, setTrendingLoading] = useState(true);
 
   // --- Fetch blog post data from Firestore ---
   useEffect(() => {
@@ -109,7 +223,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
     async function fetchPost() {
       setLoading(true);
       try {
-        const docRef = doc(db, "blogs", params.id);
+        const docRef = doc(db, "blogs-testing", params.id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setPost({ ...docSnap.data(), id: params.id });
@@ -136,35 +250,73 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
     };
   }, [params.id, blogParam]);
 
-  // --- Fetch related posts from Firestore (same category, exclude current) ---
+  // --- Fetch recent posts (exclude current) ---
   useEffect(() => {
-    if (!post || !post.category) {
-      setRelatedPosts([]);
-      setRelatedLoading(false);
-      return;
-    }
-    setRelatedLoading(true);
-    async function fetchRelated() {
+    setRecentLoading(true);
+    async function fetchRecent() {
       try {
         const q = query(
-          collection(db, "blogs"),
-          where("category", "==", post.category),
-          orderBy("date", "desc")
+          collection(db, "blogs-testing"),
+          orderBy("date", "desc"),
+          limit(6)
         );
         const snap = await getDocs(q);
         const data = snap.docs
           .map((doc) => ({ ...doc.data(), id: doc.id }))
-          .filter((p) => p.id !== post.id)
-          .slice(0, 3);
-        setRelatedPosts(data);
+          .filter((p) => p.id !== params.id)
+          .slice(0, 5);
+        setRecentPosts(data);
       } catch {
-        setRelatedPosts([]);
+        setRecentPosts([]);
       } finally {
-        setRelatedLoading(false);
+        setRecentLoading(false);
       }
     }
-    fetchRelated();
-  }, [post?.category, post?.id]);
+    fetchRecent();
+  }, [params.id]);
+
+  // --- Fetch promotions ---
+  useEffect(() => {
+    setPromoLoading(true);
+    async function fetchPromotions() {
+      try {
+        const promoSnapshot = await getDocs(
+          query(collection(db, "promotions"), orderBy("createdAt", "desc"))
+        );
+        let promoData: Promotion[] = [];
+        promoSnapshot.forEach((doc) =>
+          promoData.push({ ...doc.data(), id: doc.id } as Promotion)
+        );
+        setPromotions(promoData);
+      } catch (e) {
+        setPromotions([]);
+      } finally {
+        setPromoLoading(false);
+      }
+    }
+    fetchPromotions();
+  }, []);
+
+  // --- Fetch trending posts (where trending: true) ---
+  useEffect(() => {
+    setTrendingLoading(true);
+    async function fetchTrending() {
+      try {
+        const blogsSnapshot = await getDocs(
+          query(collection(db, "blogs-testing"), orderBy("date", "desc"))
+        );
+        const trendingData = blogsSnapshot.docs
+          .map((doc) => ({ ...doc.data(), id: doc.id }))
+          .filter((p) => p.trending === true);
+        setTrendingPosts(trendingData);
+      } catch {
+        setTrendingPosts([]);
+      } finally {
+        setTrendingLoading(false);
+      }
+    }
+    fetchTrending();
+  }, []);
 
   // --- Fetch comments for this post from Firestore ---
   useEffect(() => {
@@ -177,7 +329,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
     async function fetchComments() {
       try {
         const q = query(
-          collection(db, "blogs", post.id, "comments"),
+          collection(db, "blogs-testing", post.id, "comments"),
           orderBy("createdAt", "desc")
         );
         const snap = await getDocs(q);
@@ -212,7 +364,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
     };
     // Add to firestore
     const ref = await addDoc(
-      collection(db, "blogs", post.id, "comments"),
+      collection(db, "blogs-testing", post.id, "comments"),
       newCommentObj
     );
     setComments([
@@ -224,7 +376,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] min-h-screen text-white py-20 px-4 sm:px-6">
+      <div className="bg-white min-h-screen text-black py-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">Loading post...</h1>
         </div>
@@ -234,10 +386,10 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
 
   if (!post) {
     return (
-      <div className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] min-h-screen text-white py-20 px-4 sm:px-6">
+      <div className="bg-white min-h-screen text-black py-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">Post Not Found</h1>
-          <Link href="/blogs" className="text-cyan-400 hover:text-cyan-300">
+          <Link href="/blogs" className="text-blue-600 hover:text-blue-700">
             ← Back to all posts
           </Link>
         </div>
@@ -246,220 +398,280 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="bg-[#0a0a0a] min-h-screen text-white py-20 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Back button */}
-        <div className="mb-8">
-          <Link
-            href="/blogs"
-            className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors group"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+    <div className="bg-white min-h-screen text-black py-10 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
+        {/* Left Main Content */}
+        <div className="w-full lg:w-2/3">
+          {/* Back button */}
+          <div className="mb-7">
+            <Link
+              href="/blogs"
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors group"
             >
-              <path
-                fillRule="evenodd"
-                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Back to all posts
-          </Link>
-        </div>
-
-        {/* Main post content with image on right */}
-        <div className="flex flex-col lg:flex-row gap-8 mb-16">
-          <div className="lg:w-2/3">
-            <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-cyan-900 text-cyan-300 mb-4">
-              {post.category || "Technology"}
-            </span>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-              {post.title}
-            </h1>
-            <div className="flex items-center mb-8">
-              <div className="flex items-center">
-                <img
-                  src="https://randomuser.me/api/portraits/men/1.jpg"
-                  alt="Author"
-                  className="w-10 h-10 rounded-full mr-3"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                  clipRule="evenodd"
                 />
-                <div>
-                  <p className="text-sm font-medium">
-                    By {post.author || "John Doe"}
-                  </p>
-                  <p className="text-xs text-gray-400">{formatDate(post.date)}</p>
+              </svg>
+              Back to all posts
+            </Link>
+          </div>
+
+          {/* Title */}
+          <h1 className="text-xl sm:text-2xl font-extrabold mb-2 lg:text-4xl text-black">{post.title}</h1>
+          {/* Summary */}
+         {post.summary && (
+  <p
+    className="text-lg text-gray-700 mb-4 font-medium break-words"
+    style={{ wordWrap: "break-word", overflowWrap: "break-word", maxWidth: "100%" }}
+  >
+    {post.summary}
+  </p>
+)}
+          {/* Blog Image */}
+          {post.image && (
+            <img
+              src={post.image}
+              alt={post.title}
+              width={800}
+              height={400}
+              className="w-full h-auto object-cover rounded-xl shadow mb-8"
+              style={{ display: "block" }}
+              loading="eager"
+            />
+          )}
+        
+
+          {/* Render blog content blocks */}
+          <div className="mb-12">
+            {(post.content || []).map(renderBlock)}
+          </div>
+
+          {/* Comments and Ads section */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold mb-8 pb-2 border-b border-gray-200">
+              Comments ({comments.length})
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+              {/* Left: comments form and list */}
+              <div className="lg:col-span-2">
+                {/* Comment Form */}
+                <form
+                  onSubmit={handleSubmit}
+                  className="bg-blue-50 rounded-xl p-6 mb-8 w-full max-w-xl border border-blue-100"
+                >
+                  <h3 className="text-lg font-medium mb-4 text-blue-700">Leave a comment</h3>
+                  {!user && (
+                    <div className="mb-4 text-red-500 font-semibold">
+                      Please login to comment.
+                    </div>
+                  )}
+                  <textarea
+                    id="comment"
+                    rows={2}
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Write your comment here..."
+                    className="w-full px-4 py-2 bg-white border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-black mb-4"
+                    required
+                    disabled={!user}
+                  ></textarea>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                    disabled={!user || !newComment.trim()}
+                  >
+                    Post Comment
+                  </button>
+                </form>
+                {/* Comments List */}
+                <div className="space-y-6 w-full max-w-xl">
+                  {commentsLoading ? (
+                    <div className="text-gray-400 text-center">Loading comments...</div>
+                  ) : comments.length === 0 ? (
+                    <div className="text-gray-400 text-center">No comments yet.</div>
+                  ) : (
+                    comments.map((comment) => (
+                      <div key={comment.id} className="flex gap-4 transition">
+                        <img
+                          src={comment.avatar}
+                          alt={comment.name}
+                          className="w-12 h-12 rounded-full object-cover border-2 border-blue-400 transition"
+                        />
+                        <div className="flex-1 bg-blue-50 rounded-2xl p-5 shadow-md border border-blue-100">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-semibold text-black transition">
+                              {comment.name}
+                            </h4>
+                            <span className="text-xs text-gray-500 italic">
+                              {comment.date}
+                            </span>
+                          </div>
+                          <p className="text-gray-700 leading-relaxed">
+                            {comment.comment}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
-              <span className="ml-auto text-gray-400 text-sm">
-                {Math.ceil(
-                  ((post.summary?.length || 0) +
-                    (post.description?.length || 0)) /
-                    200
-                ) || 1}{" "}
-                min read
-              </span>
-            </div>
-
-            <div className="prose prose-invert max-w-none text-gray-300 mb-8">
-              {post.summary && (
-                <p className="text-lg leading-relaxed mb-6">{post.summary}</p>
-              )}
-              {post.description && (
-                <p className="leading-relaxed mb-6 whitespace-pre-line">
-                  {post.description}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Image on the right */}
-          <div className="lg:w-1/3 lg:sticky lg:self-start lg:top-20">
-            <div className="rounded-xl overflow-hidden shadow-2xl border border-gray-800">
-              {post.image && (
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  width={800}
-                  height={400}
-                  className="w-full h-auto object-cover rounded-xl"
-                  style={{ display: "block" }}
-                  loading="eager"
+              {/* Right: Ads Section */}
+              <div className="flex flex-col gap-8">
+                <AdComponent
+                  dataAdFormat="auto"
+                  dataFullWidthResponsive={true}
+                  className="mb-6"
                 />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Related posts (same category) */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-8 pb-2 border-b border-gray-800">
-            Related Posts
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedLoading ? (
-              <div className="text-gray-400 text-center col-span-3">Loading related posts...</div>
-            ) : relatedPosts.length === 0 ? (
-              <div className="text-gray-400 text-center col-span-3">No related posts found.</div>
-            ) : (
-              relatedPosts.map((relatedPost) => (
-                <Link
-                  key={relatedPost.id}
-                  href={{
-                    pathname: `/blogs/${relatedPost.id}`,
-                    query: { blog: encodeURIComponent(JSON.stringify(relatedPost)) },
-                  }}
-                  className="group block rounded-xl overflow-hidden transition-transform hover:scale-[1.02]"
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={relatedPost.image}
-                      alt={relatedPost.title}
-                      className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                      <span className="text-sm text-cyan-300">Read more →</span>
-                    </div>
-                  </div>
-                  <div className="p-4 bg-gray-900">
-                    <h3 className="font-medium text-white mb-1 group-hover:text-cyan-300 transition-colors">
-                      {relatedPost.title}
-                    </h3>
-                    <p className="text-xs text-gray-400">{formatDate(relatedPost.date)}</p>
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Comments and Ads section */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-8 pb-2 border-b border-gray-800">
-            Comments ({comments.length})
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {/* Left: comments form and list */}
-            <div className="lg:col-span-2">
-              {/* Comment Form */}
-              <form
-                onSubmit={handleSubmit}
-                className="bg-gray-900 rounded-xl p-6 mb-8 w-full max-w-xl"
-              >
-                <h3 className="text-lg font-medium mb-4">Leave a comment</h3>
-                {!user && (
-                  <div className="mb-4 text-red-400 font-semibold">
-                    Please login to comment.
-                  </div>
-                )}
-                <textarea
-                  id="comment"
-                  rows={2}
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Write your comment here..."
-                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white mb-4"
-                  required
-                  disabled={!user}
-                ></textarea>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-lg transition-colors"
-                  disabled={!user || !newComment.trim()}
-                >
-                  Post Comment
-                </button>
-              </form>
-              {/* Comments List */}
-              <div className="space-y-6 w-full max-w-xl">
-                {commentsLoading ? (
-                  <div className="text-gray-400 text-center">Loading comments...</div>
-                ) : comments.length === 0 ? (
-                  <div className="text-gray-400 text-center">No comments yet.</div>
-                ) : (
-                  comments.map((comment) => (
-                    <div key={comment.id} className="flex gap-4 transition">
-                      <img
-                        src={comment.avatar}
-                        alt={comment.name}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-cyan-500 transition"
-                      />
-                      <div className="flex-1 bg-gradient-to-tr from-[#181924] to-[#23253a] rounded-2xl p-5 shadow-md border border-gray-800">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-white transition">
-                            {comment.name}
-                          </h4>
-                          <span className="text-xs text-gray-400 italic">
-                            {comment.date}
-                          </span>
-                        </div>
-                        <p className="text-gray-300 leading-relaxed">
-                          {comment.comment}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                )}
+                <AdComponent
+                  dataAdFormat="auto"
+                  dataFullWidthResponsive={true}
+                  className="mb-6 h-60"
+                />
               </div>
             </div>
-            {/* Right: Ads Section */}
-            <div className="flex flex-col gap-8">
-              <AdComponent
-                dataAdFormat="auto"
-                dataFullWidthResponsive={true}
-                className="mb-6"
-              />
-              <AdComponent
-                dataAdFormat="auto"
-                dataFullWidthResponsive={true}
-                className="mb-6 h-60"
-              />
+          </div>
+        </div>
+        {/* Right Sidebar: Promotions, Recent Posts, Trending Posts */}
+        <div className="w-full lg:w-1/3 flex flex-col gap-10 ">
+          {/* Promotions section */}
+          <div className="bg-white shadow-lg mb-6 border border-blue-100 rounded-xl overflow-hidden">
+            <div className="px-4 py-3 bg-blue-50">
+              {promoLoading ? (
+                <div className="text-black">Loading promotions...</div>
+              ) : promotions.length === 0 ? (
+                <div className="text-black">No promotions found.</div>
+              ) : (
+                promotions.map((promo) => (
+                  <a
+                    key={promo.id}
+                    href={promo.url || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col gap-2 py-2 group "
+                  >
+                    <img
+                      src={promo.image}
+                      alt={promo.title || "Promotion"}
+                      width={340}
+                      height={180}
+                      className="w-full h-44 object-cover rounded-lg border border-blue-200"
+                      style={{ maxHeight: "180px", minHeight: "120px", background: "#e2e8f0" }}
+                      loading="lazy"
+                    />
+                    <span className="font-semibold text-blue-700 text-base">
+                      {promo.title}
+                    </span>
+                    {promo.description && (
+                      <span className="text-sm text-gray-600">{promo.description}</span>
+                    )}
+                  </a>
+                ))
+              )}
+            </div>
+          </div>
+          {/* Recent Posts section */}
+          <div className="bg-blue-600  shadow-lg mb-8 border border-blue-200">
+            <h2 className="text-white text-lg font-bold px-6 py-3 border-b border-blue-400">
+              Recent Posts
+            </h2>
+            <div className="px-4 py-3 bg-blue-50 text-black">
+              {recentLoading ? (
+                <div className="text-black">Loading...</div>
+              ) : recentPosts.length === 0 ? (
+                <div className="text-black">No recent posts found.</div>
+              ) : (
+                recentPosts.map((rp) => (
+                  <Link
+                    key={rp.id}
+                    href={{
+                      pathname: `/blogs/${rp.id}`,
+                      query: { blog: encodeURIComponent(JSON.stringify(rp)) },
+                    }}
+                    className="flex items-center gap-2 py-2 group text-gray-900 hover:text-gray-950"
+                  >
+                    <SlArrowRight className="text-black  text-base shrink-0" />
+                    <span className="truncate-2-lines group-hover:underline flex-1"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxHeight: "3.2em",
+                        lineHeight: "1.6em",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {rp.title}
+                    </span>
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
+          {/* Trending Posts section */}
+          <div className="bg-blue-600  shadow-lg mb-8 border border-blue-200">
+            <h2 className="text-white text-lg font-bold px-6 py-3 border-b border-blue-400">
+              Trending Posts
+            </h2>
+            <div className="px-4 py-3 bg-blue-50 text-black">
+              {trendingLoading ? (
+                <div className="text-black">Loading...</div>
+              ) : trendingPosts.length === 0 ? (
+                <div className="text-black">No Trending posts found.</div>
+              ) : (
+                trendingPosts.map((tp) => (
+                  <Link
+                    key={tp.id}
+                    href={{
+                      pathname: `/blogs/${tp.id}`,
+                      query: { blog: encodeURIComponent(JSON.stringify(tp)) },
+                    }}
+                    className="flex items-center gap-2 py-2 group text-gray-900 hover:text-gray-950"
+                  >
+                    <SlArrowRight className="text-black  text-base shrink-0" />
+                    <span className="truncate-2-lines group-hover:underline flex-1"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxHeight: "3.2em",
+                        lineHeight: "1.6em",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {tp.title}
+                    </span>
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </div>
       </div>
+      {/* Two line clamp utility for recent post titles */}
+      <style>{`
+        .truncate-2-lines {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-height: 3.2em;
+          line-height: 1.6em;
+          word-break: break-word;
+        }
+      `}</style>
     </div>
   );
 }

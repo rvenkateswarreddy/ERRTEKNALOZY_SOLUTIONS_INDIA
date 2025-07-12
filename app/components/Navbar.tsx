@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Sun, Moon, ChevronDown, X, Menu, Loader2 } from "lucide-react";
- // custom context, see above
 import { auth } from "../../FirebaseConfig";
 import { signOut, User } from "firebase/auth";
 import LoginModal from "./LoginModal";
@@ -16,29 +15,13 @@ function cn(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+// navLinks: Digital Labs does NOT have subLinks anymore
 const navLinks = [
   { id: "/", label: "Home" },
-  // {
-  //   id: "/solutions",
-  //   label: "Solutions",
-  //   subLinks: [
-  //     { id: "/solutions/enterprise", label: "Enterprise Solutions" },
-  //     { id: "/solutions/smb", label: "SMB Solutions" },
-  //     { id: "/solutions/startups", label: "Startup Programs" }
-  //   ]
-  // },
   { id: "/blogs", label: "Blogs" },
   { id: "/about", label: "About Us" },
   { id: "/career", label: "Careers" },
-  {
-    id: "/digitalLab",
-    label: "Digital Labs",
-    subLinks: [
-      { id: "/labs/research", label: "Research" },
-      { id: "/labs/innovation", label: "Innovation" },
-      { id: "/labs/prototyping", label: "Prototyping" }
-    ]
-  },
+  { id: "/digitalLab", label: "Digital Labs" },
   { id: "/contactUs", label: "Contact" },
   { id: "/compilers", label: "Compilers" }
 ];
@@ -57,8 +40,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
-
-
 
   const [mounted, setMounted] = useState(false);
 
@@ -206,15 +187,15 @@ export default function Navbar() {
                     priority
                   />
                 </motion.div>
-              <motion.span
-  initial={{ opacity: 0, x: -10 }}
-  animate={{ opacity: 1, x: 0 }}
-  transition={{ delay: 0.1, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
- className="hidden sm:block ml-3 font-bold text-xl bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent tracking-tight"
-  style={{ willChange: "opacity, transform" }}
->
-  ERRTEKNALOZY
-</motion.span>
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                  className="hidden sm:block ml-3 font-bold text-xl bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent tracking-tight"
+                  style={{ willChange: "opacity, transform" }}
+                >
+                  ERRTEKNALOZY
+                </motion.span>
               </Link>
             </div>
             {/* Desktop nav */}
@@ -226,8 +207,8 @@ export default function Navbar() {
                   onMouseEnter={() => handleDropdownEnter(link.id)}
                   onMouseLeave={handleDropdownLeave}
                   tabIndex={0}
-                  aria-haspopup={!!link.subLinks}
-                  aria-expanded={hoveredElement === link.id}
+                  aria-haspopup={false}
+                  aria-expanded={false}
                 >
                   <div className="flex items-center">
                     <Link
@@ -241,45 +222,13 @@ export default function Navbar() {
                       tabIndex={0}
                     >
                       {link.label}
-                      {link.subLinks && (
-                        <ChevronDown className="ml-1 h-4 w-4 opacity-70 transition-transform group-hover:rotate-180" />
-                      )}
                     </Link>
                   </div>
-                  <AnimatePresence>
-                    {link.subLinks && hoveredElement === link.id && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.20, ease: [0.4, 0, 0.2, 1] }}
-                    className="absolute left-0 top-full mt-1 w-56 rounded-xl shadow-xl border border-border/70 z-50
-bg-white/90 dark:bg-gray-900/90 backdrop-blur-md
-transition-all duration-200"
-                        onMouseEnter={() => handleDropdownEnter(link.id)}
-                        onMouseLeave={handleDropdownLeave}
-                      >
-                        <div className="py-1">
-                          {link.subLinks.map((subLink) => (
-                            <Link
-                              key={subLink.id}
-                              href={subLink.id}
-                              className="block px-4 py-2 text-sm text-popover-foreground/90 hover:bg-accent hover:text-primary transition-colors"
-                              onClick={() => setHoveredElement(null)}
-                            >
-                              {subLink.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
               ))}
             </nav>
             {/* Desktop right buttons */}
             <div className="hidden md:flex items-center space-x-3">
-         
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
@@ -324,7 +273,6 @@ transition-all duration-200"
             </div>
             {/* Mobile menu toggle */}
             <div className="md:hidden flex items-center space-x-3">
-         
               <button
                 onClick={() => setIsOpen((v) => !v)}
                 className="p-2 rounded-full hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -357,36 +305,7 @@ transition-all duration-200"
             >
               <nav className="flex flex-col space-y-2">
                 {mobileSubMenu ? (
-                  <>
-                    <button
-                      onClick={() => setMobileSubMenu(null)}
-                      className="flex items-center text-sm font-medium text-foreground/80 hover:text-primary mb-4"
-                    >
-                      <ChevronDown className="h-5 w-5 rotate-90 mr-1" />
-                      Back
-                    </button>
-                    {navLinks
-                      .find(link => link.id === mobileSubMenu)
-                      ?.subLinks?.map((subLink) => (
-                        <Link
-                          key={subLink.id}
-                          href={subLink.id}
-                          onClick={() => {
-                            setIsOpen(false);
-                            setMobileSubMenu(null);
-                          }}
-                          className={cn(
-                            "px-4 py-3 rounded-md text-base font-medium",
-                            "hover:text-primary hover:bg-accent",
-                            pathname === subLink.id
-                              ? "text-primary bg-accent"
-                              : "text-foreground"
-                          )}
-                        >
-                          {subLink.label}
-                        </Link>
-                      ))}
-                  </>
+                  <></> // No submenu logic required as there are no subLinks
                 ) : (
                   <>
                     {navLinks.map((link) => (
@@ -402,9 +321,6 @@ transition-all duration-200"
                           )}
                         >
                           {link.label}
-                          {link.subLinks && (
-                            <ChevronDown className="h-5 w-5 ml-2" />
-                          )}
                         </button>
                       </div>
                     ))}
