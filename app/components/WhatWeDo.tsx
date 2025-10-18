@@ -1,6 +1,6 @@
-import { memo, useMemo } from "react";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { memo, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 import {
   CodeBracketIcon,
   DevicePhoneMobileIcon,
@@ -10,48 +10,48 @@ import {
   RocketLaunchIcon,
   ShieldCheckIcon,
   GlobeAltIcon,
-} from "@heroicons/react/24/outline";
+} from '@heroicons/react/24/outline';
 
 // Service data is static, so useMemo for performance and clarity
 const SERVICES = [
   {
-    title: "Web Development",
-    description: "High-performance websites with modern tech stacks.",
+    title: 'Web Development',
+    description: 'High-performance websites with modern tech stacks.',
     icon: CodeBracketIcon,
   },
   {
-    title: "Mobile Applications",
-    description: "iOS & Android apps with flawless UX.",
+    title: 'Mobile Applications',
+    description: 'iOS & Android apps with flawless UX.',
     icon: DevicePhoneMobileIcon,
   },
   {
-    title: "Automation Tools",
-    description: "Smart solutions to streamline your workflows.",
+    title: 'Automation Tools',
+    description: 'Smart solutions to streamline your workflows.',
     icon: ArrowPathIcon,
   },
   {
-    title: "Digital Products",
-    description: "Custom software for your specific needs.",
+    title: 'Digital Products',
+    description: 'Custom software for your specific needs.',
     icon: CpuChipIcon,
   },
   {
-    title: "Cloud Solutions",
-    description: "Scalable infrastructure for your applications.",
+    title: 'Cloud Solutions',
+    description: 'Scalable infrastructure for your applications.',
     icon: ServerIcon,
   },
   {
-    title: "UI/UX Design",
-    description: "Beautiful interfaces with intuitive experiences.",
+    title: 'UI/UX Design',
+    description: 'Beautiful interfaces with intuitive experiences.',
     icon: RocketLaunchIcon,
   },
   {
-    title: "Maintenance & Support",
-    description: "Reliable ongoing support for your digital assets.",
+    title: 'Maintenance & Support',
+    description: 'Reliable ongoing support for your digital assets.',
     icon: ShieldCheckIcon,
   },
   {
-    title: "Consulting",
-    description: "Expert guidance for your digital strategy.",
+    title: 'Consulting',
+    description: 'Expert guidance for your digital strategy.',
     icon: GlobeAltIcon,
   },
 ] as const;
@@ -61,13 +61,13 @@ const CARD_ANIMATION_VARIANTS = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.10, type: "spring", stiffness: 90, damping: 15 }
+    transition: { delay: i * 0.1, type: 'spring', stiffness: 90, damping: 15 },
   }),
 };
 
 const SECTION_ANIMATION = {
   hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
 };
 
 function WhatWeDoComponent() {
@@ -82,12 +82,12 @@ function WhatWeDoComponent() {
       id="services"
       ref={ref}
       aria-label="Our Digital Services"
-      className="py-20 relative bg-gradient-to-b from-gray-800 to-gray-900"
+      className="py-20 relative"
     >
       <div className="container mx-auto px-6">
         <motion.div
           initial="hidden"
-          animate={inView ? "visible" : "hidden"}
+          animate={inView ? 'visible' : 'hidden'}
           variants={SECTION_ANIMATION}
           className="text-center mb-16"
         >
@@ -106,15 +106,15 @@ function WhatWeDoComponent() {
               <motion.article
                 key={service.title}
                 initial="hidden"
-                animate={inView ? "visible" : "hidden"}
+                animate={inView ? 'visible' : 'hidden'}
                 variants={CARD_ANIMATION_VARIANTS}
                 custom={idx}
                 tabIndex={0}
                 aria-label={service.title}
-                className="bg-gray-800/70 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 hover:border-blue-500/40 focus-within:border-blue-400 transition-all hover:-translate-y-2 focus-within:-translate-y-2 shadow-lg outline-none"
+                className="bg-gray-white/70 text-center md:text-left backdrop-blur-sm rounded-xl p-6 border border-gray-400/50 hover:border-blue-500/40 focus-within:border-blue-400 transition-all hover:-translate-y-2 focus-within:-translate-y-2 shadow-lg outline-none"
               >
                 <div className="text-blue-400 mb-4" aria-hidden="true">
-                  <Icon className="h-8 w-8" />
+                  <Icon className="h-8 w-8 mx-auto md:mx-0" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">{service.title}</h3>
                 <p className="text-gray-400">{service.description}</p>

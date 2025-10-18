@@ -1,16 +1,16 @@
-"use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+'use client';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
-} from "firebase/auth";
-import { auth } from "../../FirebaseConfig"; // Firebase setup
+} from 'firebase/auth';
+import { auth } from '../../FirebaseConfig'; // Firebase setup
 
 export default function LoginModal({ isOpen, onClose }) {
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [isRegistering, setIsRegistering] = useState(false); // Toggle between login and register views
 
   const handleGoogleLogin = async () => {
@@ -82,13 +82,13 @@ export default function LoginModal({ isOpen, onClose }) {
             <div className="mb-4 w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-lg border-4 border-cyan-400 bg-white flex items-center justify-center">
               <img
                 src="/assets/ERRTEKNALOZY.jpg"
-                alt="ERRTEKNALOZY Blog Logo"
+                alt="Talent with Us Blog Logo"
                 className="w-full h-full object-cover"
                 draggable={false}
               />
             </div>
             <h1 className="text-xl md:text-2xl font-bold mb-2 text-cyan-300 tracking-wide drop-shadow-lg text-center">
-              ERRTEKNALOZY Blog
+              Talent With Us Blog
             </h1>
             <p className="text-center text-gray-300 mb-4 text-sm md:text-base">
               Unlock insights, tips, and the latest trends from the world of
@@ -106,11 +106,11 @@ export default function LoginModal({ isOpen, onClose }) {
               </span>
             </div>
             <p className="text-xs text-gray-400 mt-2">
-              By continuing, you agree to our{" "}
+              By continuing, you agree to our{' '}
               <a href="#" className="text-cyan-400 hover:underline">
                 Terms of Service
-              </a>{" "}
-              and{" "}
+              </a>{' '}
+              and{' '}
               <a href="#" className="text-cyan-400 hover:underline">
                 Privacy Policy
               </a>
@@ -204,7 +204,7 @@ export default function LoginModal({ isOpen, onClose }) {
                     </button>
                   </form>
                   <p className="text-sm text-gray-400 mt-6 text-center">
-                    Already have an account?{" "}
+                    Already have an account?{' '}
                     <span
                       onClick={() => setIsRegistering(false)}
                       className="text-cyan-400 hover:underline cursor-pointer font-semibold"
@@ -264,7 +264,7 @@ export default function LoginModal({ isOpen, onClose }) {
                     </button>
                   </form>
                   <p className="text-sm text-gray-400 mt-6 text-center">
-                    Don’t have an account?{" "}
+                    Don’t have an account?{' '}
                     <span
                       onClick={() => setIsRegistering(true)}
                       className="text-cyan-400 hover:underline cursor-pointer font-semibold"

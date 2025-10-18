@@ -1,39 +1,50 @@
-"use client";
-import React, { useRef, useState, Suspense, lazy } from "react";
-import dynamic from "next/dynamic";
-import { FiMail, FiSend, FiPhone, FiMapPin } from "react-icons/fi";
-import Image from "next/image";
-import Head from "next/head";
+'use client';
+import React, { useRef, useState, Suspense, lazy } from 'react';
+import dynamic from 'next/dynamic';
+import { FiMail, FiSend, FiPhone, FiMapPin } from 'react-icons/fi';
+import Image from 'next/image';
+import Head from 'next/head';
 
 // Lazily load horizontal ad (example of code splitting for performance)
-
 
 // SEO metadata for production-level discoverability
 const SEO = () => (
   <Head>
-    <title>Contact ERRTEKNALOZY | Project Inquiry & Support</title>
+    <title>Contact Talent With Us | Project Inquiry & Support</title>
     <meta
       name="description"
-      content="Get in touch with ERRTEKNALOZY for project inquiries, ideas, or support. Let's create something remarkable together. Contact us via email, phone, or our secure form."
+      content="Get in touch with Talent With Us for project inquiries, ideas, or support. Let's create something remarkable together. Contact us via email, phone, or our secure form."
     />
     <meta
       property="og:title"
-      content="Connect with ERRTEKNALOZY | Contact, Project, Support"
+      content="Connect with Talent With Us | Contact, Project, Support"
     />
     <meta
       property="og:description"
       content="Got a project, idea, or just want to say hello? We’d love to hear from you. Reach out and let’s create something remarkable together."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://errteknalozy.com/contact" />
-    <meta property="og:image" content="https://errteknalozy.com/assets/contact.jpg" />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <link rel="canonical" href="https://errteknalozy.com/contact" />
+    <meta property="og:url" content="https://talentwithus.com/contact" />
+    <meta
+      property="og:image"
+      content="https://talentwithus.com/assets/contact.jpg"
+    />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <link rel="canonical" href="https://talentwithus.com/contact" />
   </Head>
 );
 
 // Helper for accessibility & spam protection (honeypot)
-const initialForm = { name: "", email: "", subject: "", message: "", company: "" };
+const initialForm = {
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
+  company: '',
+};
 
 const ContactPage = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -50,7 +61,9 @@ const ContactPage = () => {
     form.message.trim();
 
   // Handle form field changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -59,12 +72,12 @@ const ContactPage = () => {
     e.preventDefault();
     setError(null);
     if (!validate()) {
-      setError("Please fill in all fields with valid information.");
+      setError('Please fill in all fields with valid information.');
       return;
     }
     if (form.company.length > 0) {
       // Honeypot filled, treat as spam
-      setError("Submission failed. Please try again.");
+      setError('Submission failed. Please try again.');
       return;
     }
     setSending(true);
@@ -75,7 +88,7 @@ const ContactPage = () => {
       setForm(initialForm);
       if (formRef.current) formRef.current.reset();
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError('Something went wrong. Please try again.');
     } finally {
       setSending(false);
     }
@@ -93,11 +106,11 @@ const ContactPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative z-10">
           {/* Heading Section */}
           <header className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-fuchsia-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent mb-5 tracking-tight flex items-center justify-center gap-3">
-              <span>Connect with ERRTEKNALOZY</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-fuchsia-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent mb-5 tracking-tight flex items-center justify-center gap-3">
+              <span>Connect with Talent With Us</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Got a project, idea, or just want to say hello?{" "}
+              Got a project, idea, or just want to say hello?{' '}
               <br className="hidden md:block" />
               We’d love to hear from you. Reach out and let’s create something
               remarkable together.
@@ -124,9 +137,13 @@ const ContactPage = () => {
                 <figcaption className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-800/30 to-[#1a1a1a]/70" />
               </figure>
               {/* Contact Information Card */}
-              <div className="bg-[#13151b] p-8 rounded-3xl shadow-lg w-full" aria-label="Contact Information">
+              <div
+                className="bg-[#13151b] p-8 rounded-3xl shadow-lg w-full"
+                aria-label="Contact Information"
+              >
                 <h2 className="text-2xl font-bold text-fuchsia-400 mb-6 flex items-center gap-2">
-                  <FiMail className="text-cyan-400" aria-hidden="true" /> Contact Information
+                  <FiMail className="text-cyan-400" aria-hidden="true" />{' '}
+                  Contact Information
                 </h2>
                 <ul className="space-y-6">
                   <li className="flex items-center gap-4">
@@ -141,17 +158,20 @@ const ContactPage = () => {
                         Email
                       </div>
                       <a
-                        href="mailto:contact@errteknalozy.com"
+                        href="mailto: contact@talentwithus.com"
                         className="text-cyan-200 text-lg font-semibold hover:underline hover:text-fuchsia-400 transition"
                         aria-label="Email address"
                       >
-                        contact@errteknalozy.com
+                        contact@talentwithus.com
                       </a>
                     </div>
                   </li>
                   <li className="flex items-center gap-4">
                     <div className="bg-fuchsia-500/10 p-3 rounded-xl">
-                      <FiPhone className="text-fuchsia-400 text-2xl" aria-label="Phone" />
+                      <FiPhone
+                        className="text-fuchsia-400 text-2xl"
+                        aria-label="Phone"
+                      />
                     </div>
                     <div>
                       <div className="text-gray-400 text-xs uppercase tracking-widest font-semibold">
@@ -168,7 +188,10 @@ const ContactPage = () => {
                   </li>
                   <li className="flex items-center gap-4">
                     <div className="bg-blue-500/10 p-3 rounded-xl">
-                      <FiMapPin className="text-blue-400 text-2xl" aria-label="Location" />
+                      <FiMapPin
+                        className="text-blue-400 text-2xl"
+                        aria-label="Location"
+                      />
                     </div>
                     <div>
                       <div className="text-gray-400 text-xs uppercase tracking-widest font-semibold">
@@ -217,8 +240,14 @@ const ContactPage = () => {
                     onChange={handleChange}
                   />
                   <div>
-                    <label htmlFor="name" className="block text-gray-300 text-sm font-medium mb-2">
-                      Full Name <span aria-hidden="true" className="text-red-400">*</span>
+                    <label
+                      htmlFor="name"
+                      className="block text-gray-300 text-sm font-medium mb-2"
+                    >
+                      Full Name{' '}
+                      <span aria-hidden="true" className="text-red-400">
+                        *
+                      </span>
                     </label>
                     <input
                       type="text"
@@ -236,8 +265,14 @@ const ContactPage = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-gray-300 text-sm font-medium mb-2">
-                      Email Address <span aria-hidden="true" className="text-red-400">*</span>
+                    <label
+                      htmlFor="email"
+                      className="block text-gray-300 text-sm font-medium mb-2"
+                    >
+                      Email Address{' '}
+                      <span aria-hidden="true" className="text-red-400">
+                        *
+                      </span>
                     </label>
                     <input
                       type="email"
@@ -254,8 +289,14 @@ const ContactPage = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="subject" className="block text-gray-300 text-sm font-medium mb-2">
-                      Subject <span aria-hidden="true" className="text-red-400">*</span>
+                    <label
+                      htmlFor="subject"
+                      className="block text-gray-300 text-sm font-medium mb-2"
+                    >
+                      Subject{' '}
+                      <span aria-hidden="true" className="text-red-400">
+                        *
+                      </span>
                     </label>
                     <input
                       type="text"
@@ -272,8 +313,14 @@ const ContactPage = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="message" className="block text-gray-300 text-sm font-medium mb-2">
-                      Your Message <span aria-hidden="true" className="text-red-400">*</span>
+                    <label
+                      htmlFor="message"
+                      className="block text-gray-300 text-sm font-medium mb-2"
+                    >
+                      Your Message{' '}
+                      <span aria-hidden="true" className="text-red-400">
+                        *
+                      </span>
                     </label>
                     <textarea
                       id="message"
@@ -296,16 +343,33 @@ const ContactPage = () => {
                   )}
                   <button
                     type="submit"
-                    className={`w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white font-bold rounded-lg hover:from-cyan-500 hover:to-fuchsia-500 transition-all duration-300 group mt-2 text-lg shadow-xl ${sending ? "opacity-70 cursor-not-allowed" : ""}`}
+                    className={`w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white font-bold rounded-lg hover:from-cyan-500 hover:to-fuchsia-500 cursor-pointer transition-all duration-300 group mt-2 text-lg shadow-xl ${
+                      sending ? 'opacity-70 cursor-not-allowed' : ''
+                    }`}
                     disabled={sending}
                     aria-busy={sending}
                     aria-label="Send Message"
                   >
                     {sending ? (
                       <>
-                        <svg className="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24" fill="none">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3 text-white"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8z"
+                          ></path>
                         </svg>
                         Sending...
                       </>
@@ -322,18 +386,17 @@ const ContactPage = () => {
           </main>
 
           {/* Lazy load ad for performance */}
-     
 
           {/* Optional Map or Social Links Section */}
           <section className="text-center mt-20">
             <p className="text-gray-400 text-lg">
-              Prefer email? Reach us directly at{" "}
+              Prefer email? Reach us directly at{' '}
               <a
-                href="mailto:contact@errteknalozy.com"
+                href="mailto:contact@talentwithus.com"
                 className="text-cyan-300 font-semibold underline hover:text-fuchsia-400 transition"
                 aria-label="Direct email"
               >
-                contact@errteknalozy.com
+                contact@talentwithus.com
               </a>
             </p>
           </section>

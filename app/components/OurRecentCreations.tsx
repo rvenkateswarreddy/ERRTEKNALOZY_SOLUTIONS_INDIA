@@ -1,34 +1,58 @@
-"use client";
-import { useState } from "react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../../FirebaseConfig";
+'use client';
+import { useState } from 'react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../FirebaseConfig';
 
 // You can customize or expand these types later!
 const TYPE_OPTIONS = [
-  { value: "website", label: "Website", desc: "Professional, scalable web platforms for any purpose." },
-  { value: "app", label: "App", desc: "Mobile apps for iOS, Android, or both — native or cross-platform." },
-  { value: "automation", label: "Automation Tool", desc: "Automate workflows, business logic, or repetitive tasks." },
-  { value: "ai", label: "AI/ML Solution", desc: "Custom AI models, chatbots, analytics & intelligent systems." },
-  { value: "product", label: "Digital Product", desc: "SaaS, e-commerce, dashboards, portals and more." },
-  { value: "other", label: "Other", desc: "Tell us your unique vision!" },
+  {
+    value: 'website',
+    label: 'Website',
+    desc: 'Professional, scalable web platforms for any purpose.',
+  },
+  {
+    value: 'app',
+    label: 'App',
+    desc: 'Mobile apps for iOS, Android, or both — native or cross-platform.',
+  },
+  {
+    value: 'automation',
+    label: 'Automation Tool',
+    desc: 'Automate workflows, business logic, or repetitive tasks.',
+  },
+  {
+    value: 'ai',
+    label: 'AI/ML Solution',
+    desc: 'Custom AI models, chatbots, analytics & intelligent systems.',
+  },
+  {
+    value: 'product',
+    label: 'Digital Product',
+    desc: 'SaaS, e-commerce, dashboards, portals and more.',
+  },
+  { value: 'other', label: 'Other', desc: 'Tell us your unique vision!' },
 ];
 
 export default function CreationRequestForm() {
   const [type, setType] = useState(TYPE_OPTIONS[0].value);
   const [form, setForm] = useState({
-    name: "",
-    purpose: "",
-    platform: "",
-    features: "",
-    targetAudience: "",
-    phone: "",
-    details: "",
+    name: '',
+    purpose: '',
+    platform: '',
+    features: '',
+    targetAudience: '',
+    phone: '',
+    details: '',
   });
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   // Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -36,70 +60,78 @@ export default function CreationRequestForm() {
   const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setType(e.target.value);
     setForm({
-      name: "",
-      purpose: "",
-      platform: "",
-      features: "",
-      targetAudience: "",
-      phone: "",
-      details: "",
+      name: '',
+      purpose: '',
+      platform: '',
+      features: '',
+      targetAudience: '',
+      phone: '',
+      details: '',
     });
     setSubmitted(false);
-    setError("");
+    setError('');
   };
 
   // Handle form submit - store in Firestore
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     try {
       // Prepare record for Firestore
       const dataToSave = {
         requestType: type,
         projectName: form.name,
         purpose: form.purpose,
-        platform: ["app", "automation"].includes(type) ? form.platform : "",
+        platform: ['app', 'automation'].includes(type) ? form.platform : '',
         features: form.features,
         targetAudience: form.targetAudience,
         phoneNumber: form.phone,
         details: form.details,
         createdAt: serverTimestamp(),
       };
-      await addDoc(collection(db, "creationRequests"), dataToSave);
+      await addDoc(collection(db, 'creationRequests'), dataToSave);
       setSubmitted(true);
       setForm({
-        name: "",
-        purpose: "",
-        platform: "",
-        features: "",
-        targetAudience: "",
-        phone: "",
-        details: "",
+        name: '',
+        purpose: '',
+        platform: '',
+        features: '',
+        targetAudience: '',
+        phone: '',
+        details: '',
       });
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError('Something went wrong. Please try again.');
       setSubmitted(false);
     }
   };
 
   return (
-    <section className="py-16 px-4 min-h-screen flex items-center justify-center bg-gradient-to-br from-[#061a2e] via-[#0f1624] to-[#202a44] text-white">
-      <div className="w-full max-w-4xl mx-auto bg-[#17213b]/95 rounded-2xl p-10 sm:p-14 shadow-2xl border border-cyan-800">
-        <h2 className="text-3xl font-extrabold mb-2 text-cyan-400 text-center">
+    <section
+      className="py-16 px-4 min-h-screen flex items-center justify-center bg-gradient-to-br from-[#d1e7f9] via-[#dbe3f0] to-[#bbc3df]
+ text-white"
+    >
+      <div
+        className="w-full max-w-4xl mx-auto bg-[#C4E0E8]/95
+ rounded-2xl p-10 sm:p-14 shadow-2xl border border-[#A0F0F9]"
+      >
+        <h2 className="text-3xl font-bold mb-2 text-[#007D9C] text-center">
           Request Your Digital Solution
         </h2>
-        <p className="text-gray-200 mb-8 text-center text-base">
-          Looking for a website, app, or something custom? Tell us your vision — our expert team will guide you from idea to launch!
+        <p className="text-gray-800 mb-8 text-center text-base">
+          Looking for a website, app, or something custom? Tell us your vision —
+          our expert team will guide you from idea to launch!
         </p>
         {/* Type Selection */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 mb-8">
-          {TYPE_OPTIONS.map(opt => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:grid-cols-3 mb-8">
+          {TYPE_OPTIONS.map((opt) => (
             <label
               key={opt.value}
               className={`flex flex-col items-center px-2 py-2 rounded-lg border transition cursor-pointer select-none group
-                ${type === opt.value
-                  ? "bg-cyan-600 border-cyan-400 ring-2 ring-cyan-300 text-white shadow-lg"
-                  : "bg-[#101828] border-cyan-800 text-cyan-200 hover:bg-cyan-700/30 hover:text-cyan-100"
+                ${
+                  type === opt.value
+                    ? 'bg-[#007D9C] border-[#A0F0F9] ring-2 ring-[#A0F0F9] text-white shadow-lg'
+                    : 'bg-[#172C3A] border-[#22B8CF] text-[#A2F0FA]'
                 }`}
             >
               <input
@@ -122,18 +154,18 @@ export default function CreationRequestForm() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block mb-1 font-medium">
-                {type === "website"
-                  ? "Website Name"
-                  : type === "app"
-                  ? "App Name"
-                  : type === "automation"
-                  ? "Automation Tool Name"
-                  : type === "ai"
-                  ? "AI/ML Solution Name"
-                  : type === "product"
-                  ? "Product Name"
-                  : "Project Name"}
+              <label className="block text-black/80 mb-1 font-medium">
+                {type === 'website'
+                  ? 'Website Name'
+                  : type === 'app'
+                  ? 'App Name'
+                  : type === 'automation'
+                  ? 'Automation Tool Name'
+                  : type === 'ai'
+                  ? 'AI/ML Solution Name'
+                  : type === 'product'
+                  ? 'Product Name'
+                  : 'Project Name'}
               </label>
               <input
                 name="name"
@@ -141,41 +173,45 @@ export default function CreationRequestForm() {
                 onChange={handleChange}
                 required
                 placeholder="Project Name"
-                className="w-full px-4 py-3 rounded-lg bg-[#101828] border border-cyan-700 text-white text-lg"
+                className="w-full px-4 py-3 rounded-lg bg-[#172C3A] border border-cyan-700 text-white/80 text-lg"
               />
             </div>
             <div>
-              <label className="block mb-1 font-medium">Purpose</label>
+              <label className="block text-black/80 mb-1 font-medium">
+                Purpose
+              </label>
               <input
                 name="purpose"
                 value={form.purpose}
                 onChange={handleChange}
                 required
                 placeholder="e.g. Sell products, automate tasks, launch SaaS"
-                className="w-full px-4 py-3 rounded-lg bg-[#101828] border border-cyan-700 text-white text-lg"
+                className="w-full px-4 py-3 rounded-lg bg-[#172C3A] border border-cyan-700 text-white/80 md:text-lg"
               />
             </div>
-            {(type === "app" || type === "automation") && (
+            {(type === 'app' || type === 'automation') && (
               <div>
-                <label className="block mb-1 font-medium">Platform</label>
+                <label className="block text-black/80 mb-1 font-medium">
+                  Platform
+                </label>
                 <select
                   name="platform"
                   value={form.platform}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-[#101828] border border-cyan-700 text-white text-lg"
+                  className="w-full px-4 py-3 rounded-lg bg-[#172C3A] border border-cyan-700 text-white/80 text-lg"
                 >
                   <option value="">Select platform</option>
                   <option value="iOS">iOS</option>
                   <option value="Android">Android</option>
                   <option value="Desktop">Desktop</option>
-               
+
                   <option value="Other">Other</option>
                 </select>
               </div>
             )}
             <div>
-              <label className="block mb-1 font-medium">
+              <label className="block text-black/80 mb-1 font-medium">
                 Key Features / Requirements
               </label>
               <input
@@ -184,11 +220,11 @@ export default function CreationRequestForm() {
                 onChange={handleChange}
                 required
                 placeholder="e.g. Payments, AI, chat, admin panel"
-                className="w-full px-4 py-3 rounded-lg bg-[#101828] border border-cyan-700 text-white text-lg"
+                className="w-full px-4 py-3 rounded-lg bg-[#172C3A] border border-cyan-700 text-white/80 text-lg"
               />
             </div>
             <div>
-              <label className="block mb-1 font-medium">
+              <label className="block text-black/80 mb-1 font-medium">
                 Target Audience
               </label>
               <input
@@ -197,11 +233,13 @@ export default function CreationRequestForm() {
                 onChange={handleChange}
                 required
                 placeholder="e.g. Students, enterprises, public"
-                className="w-full px-4 py-3 rounded-lg bg-[#101828] border border-cyan-700 text-white text-lg"
+                className="w-full px-4 py-3 rounded-lg bg-[#172C3A] border border-cyan-700 text-white/80 text-lg"
               />
             </div>
             <div>
-              <label className="block mb-1 font-medium">Phone Number</label>
+              <label className="block text-black/80 mb-1 font-medium">
+                Phone Number
+              </label>
               <input
                 name="phone"
                 value={form.phone}
@@ -210,28 +248,30 @@ export default function CreationRequestForm() {
                 type="tel"
                 pattern="[0-9]{10,15}"
                 placeholder="Enter your phone number"
-                className="w-full px-4 py-3 rounded-lg bg-[#101828] border border-cyan-700 text-white text-lg"
+                className="w-full px-4 py-3 rounded-lg bg-[#172C3A] border border-cyan-700 text-white/80 text-lg"
               />
             </div>
             <div>
-              <label className="block mb-1 font-medium">More Details (optional)</label>
+              <label className="block text-black/80 mb-1 font-medium">
+                More Details (optional)
+              </label>
               <textarea
                 name="details"
                 value={form.details}
                 onChange={handleChange}
                 rows={3}
                 placeholder="Describe your requirements, timelines, inspirations, or questions…"
-                className="w-full px-4 py-3 rounded-lg bg-[#101828] border border-cyan-700 text-white text-base resize-none"
+                className="w-full px-4 py-3 rounded-lg bg-[#172C3A] border border-cyan-700 text-white/80 text-base resize-none"
               />
             </div>
-            {error && (
-              <div className="text-red-500 text-sm">{error}</div>
-            )}
+            {error && <div className="text-red-500 text-sm">{error}</div>}
             <button
               type="submit"
-              className="w-full py-3 mt-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg text-lg transition"
+              className="w-full py-3 mt-3 bg-[#007D9C] cursor-pointer border-[#A0F0F9] ring-2 ring-[#A0F0F9] text-white shadow-lg font-bold rounded-lg text-lg transition"
             >
-              Request {TYPE_OPTIONS.find(opt => opt.value === type)?.label || "Project"}
+              Request{' '}
+              {TYPE_OPTIONS.find((opt) => opt.value === type)?.label ||
+                'Project'}
             </button>
           </form>
         )}
@@ -239,7 +279,6 @@ export default function CreationRequestForm() {
     </section>
   );
 }
-
 
 // "use client";
 // import { useState } from "react";
@@ -302,7 +341,7 @@ export default function CreationRequestForm() {
 //     e.preventDefault();
 //     setError("");
 //     try {
-    
+
 //       // Create meaningful key-value pairs for Firestore
 //       const dataToSave = {
 //         requestType: type, // "website" or "app"

@@ -1,6 +1,6 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import ScheduleCallModal from "./ScheduleCallModal";
+'use client';
+import React, { useEffect, useState } from 'react';
+import ScheduleCallModal from './ScheduleCallModal';
 
 const CompanyBanner = () => {
   const [watermarkGrid, setWatermarkGrid] = useState<
@@ -9,7 +9,9 @@ const CompanyBanner = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const rows = 5, cols = 4, grid = [];
+    const rows = 5,
+      cols = 4,
+      grid = [];
     for (let r = 0; r < rows; r++)
       for (let c = 0; c < cols; c++)
         grid.push({
@@ -21,30 +23,31 @@ const CompanyBanner = () => {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-white dark:bg-gray-950 text-gray-900 dark:text-white py-20 px-6 sm:px-12 lg:px-24 rounded-4xl shadow-xl border border-gray-200 dark:border-gray-800">
+    <section className="relative overflow-hidden my-6 md:my-8 bg-white/80  text-gray-900  py-20 px-6 sm:px-12 lg:px-24 rounded-4xl shadow-xl border border-gray-300">
       {/* Watermark Grid */}
       <div className="absolute inset-0 pointer-events-none z-0 animate-fade-in-slow">
         {watermarkGrid.map((pos, i) => (
           <span
             key={i}
-            className="absolute text-xl sm:text-3xl font-semibold select-none opacity-5 whitespace-nowrap text-gray-900 dark:text-white"
-            style={{ top: pos.top, left: pos.left, transform: `rotate(${pos.rotate})` }}
+            className="absolute text-xl sm:text-3xl font-semibold select-none opacity-5 whitespace-nowrap text-gray-900"
+            style={{
+              top: pos.top,
+              left: pos.left,
+              transform: `rotate(${pos.rotate})`,
+            }}
           >
-            Errteknalozy
+            Talent With Us
           </span>
         ))}
       </div>
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-blue-700 via-fuchsia-500 to-orange-400">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-blue-700 via-fuchsia-500 to-orange-400">
           Building Exceptional Digital Products
         </h1>
-        <p className="mt-6 text-lg sm:text-xl max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
-          At{" "}
-          <span className="font-semibold text-black dark:text-white">
-            Errteknalozy
-          </span>
-          , we craft high-impact websites, powerful applications, and end-to-end
+        <p className="mt-6 text-lg sm:text-xl max-w-3xl mx-auto text-black/70">
+          At <span className="font-semibold text-black">Talent With Us</span>,
+          we craft high-impact websites, powerful applications, and end-to-end
           digital systems that fuel business innovation. Our agile process and
           deep tech expertise guarantee precision delivery at scale.
         </p>

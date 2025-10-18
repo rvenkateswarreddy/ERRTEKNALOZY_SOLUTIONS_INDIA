@@ -1,10 +1,10 @@
-"use client";
-import React, { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { SlArrowRight } from "react-icons/sl";
-import { GrAnnounce } from "react-icons/gr";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { db } from "../../FirebaseConfig";
+'use client';
+import React, { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { SlArrowRight } from 'react-icons/sl';
+import { GrAnnounce } from 'react-icons/gr';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../../FirebaseConfig';
 
 // --- Types ---
 interface BlogPost {
@@ -27,27 +27,28 @@ interface Promotion {
 
 // --- Utils ---
 const formatDate = (date: string | { seconds: number } | undefined): string => {
-  if (!date) return "";
-  if (typeof date === "string") {
+  if (!date) return '';
+  if (typeof date === 'string') {
     return new Date(date).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   }
-  if (typeof date === "object" && date.seconds) {
+  if (typeof date === 'object' && date.seconds) {
     return new Date(date.seconds * 1000).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   }
-  return "";
+  return '';
 };
 
 const getDateObj = (date: string | { seconds: number }) => {
-  if (typeof date === "string") return new Date(date);
-  if (typeof date === "object" && date.seconds) return new Date(date.seconds * 1000);
+  if (typeof date === 'string') return new Date(date);
+  if (typeof date === 'object' && date.seconds)
+    return new Date(date.seconds * 1000);
   return new Date();
 };
 
@@ -68,20 +69,28 @@ const BlogPosts: React.FC = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [sideImages, setSideImages] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   // --- Data Fetching ---
   useEffect(() => {
     let isMounted = true;
     async function fetchData() {
       try {
-        const blogsSnapshot = await getDocs(query(collection(db, "blogs-testing"), orderBy("date", "desc")));
+        const blogsSnapshot = await getDocs(
+          query(collection(db, 'blogs-testing'), orderBy('date', 'desc'))
+        );
         const blogsData: BlogPost[] = [];
-        blogsSnapshot.forEach((doc) => blogsData.push({ ...doc.data(), id: doc.id } as BlogPost));
+        blogsSnapshot.forEach((doc) =>
+          blogsData.push({ ...doc.data(), id: doc.id } as BlogPost)
+        );
         let promoData: Promotion[] = [];
         try {
-          const promoSnapshot = await getDocs(query(collection(db, "promotions"), orderBy("createdAt", "desc")));
-          promoSnapshot.forEach((doc) => promoData.push({ ...doc.data(), id: doc.id } as Promotion));
+          const promoSnapshot = await getDocs(
+            query(collection(db, 'promotions'), orderBy('createdAt', 'desc'))
+          );
+          promoSnapshot.forEach((doc) =>
+            promoData.push({ ...doc.data(), id: doc.id } as Promotion)
+          );
         } catch (e) {}
         if (!isMounted) return;
         setBlogPosts(blogsData);
@@ -136,7 +145,9 @@ const BlogPosts: React.FC = () => {
       <section className="bg-white py-24 px-2 sm:px-4 text-black min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full border-8 border-blue-200 border-t-blue-500 h-20 w-20"></div>
-          <span className="text-lg font-bold text-blue-600">Loading Blogs...</span>
+          <span className="text-lg font-bold text-blue-600">
+            Loading Blogs...
+          </span>
         </div>
       </section>
     );
@@ -144,7 +155,7 @@ const BlogPosts: React.FC = () => {
 
   return (
     <section
-      className="bg-white py-10 sm:px-4 text-black min-h-screen w-full"
+      className="bg-white p-8 md:p-10 sm:px-4 text-black min-h-screen w-full"
       aria-labelledby="blog-posts-heading"
     >
       <div className="max-w-6xl mx-auto w-full flex flex-col-reverse lg:flex-row gap-0 lg:gap-12 relative">
@@ -153,16 +164,17 @@ const BlogPosts: React.FC = () => {
           {/* Main Heading */}
           <h2
             id="blog-posts-heading"
-            className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-3 flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-700 bg-clip-text text-transparent"
+            className="text-2xl text-center md:text-left sm:text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-700 bg-clip-text text-transparent"
           >
             Trending Voices & Stories!
           </h2>
-          <p className="text-center text-sm sm:text-base md:text-lg text-gray-600 mb-6">
-            Explore the latest trending and curated articles, tips, and insights.
+          <p className="text-center md:text-left text-sm sm:text-base md:text-lg text-gray-600 mb-6">
+            Explore the latest trending and curated articles, tips, and
+            insights.
           </p>
 
           {/* Search box */}
-          <div className="flex items-center justify-center gap-2 mb-8">
+          <div className="flex items-center justify-center md:justify-start gap-2 mb-8">
             <div className="relative w-full max-w-md">
               <label htmlFor="blog-search" className="sr-only">
                 Search blog posts
@@ -177,7 +189,10 @@ const BlogPosts: React.FC = () => {
                 aria-label="Search blog posts"
                 autoComplete="off"
               />
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400" aria-hidden>
+              <span
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400"
+                aria-hidden
+              >
                 <svg width="18" height="18" fill="none">
                   <path
                     d="M12.5 12.5L17 17M14 8.5A5.5 5.5 0 1 1 3 8.5a5.5 5.5 0 0 1 11 0Z"
@@ -195,7 +210,10 @@ const BlogPosts: React.FC = () => {
           <div className="rounded-md overflow-hidden mb-0 w-full ">
             <div className="bg-blue-600 px-4 py-2 flex items-center">
               <GrAnnounce className="text-white text-lg mr-2" />
-              <span className="uppercase text-white font-bold tracking-wide text-base sm:text-lg" style={{letterSpacing: "0.06em"}}>
+              <span
+                className="uppercase text-white font-bold tracking-wide text-base sm:text-lg"
+                style={{ letterSpacing: '0.06em' }}
+              >
                 Trending
               </span>
             </div>
@@ -212,24 +230,26 @@ const BlogPosts: React.FC = () => {
                           query: { title: post.title },
                         }}
                         className="flex items-start gap-2 text-base sm:text-[1.05rem] group px-1 py-2"
-                        style={{ fontWeight: 500, color: "#1e293b" }}
+                        style={{ fontWeight: 500, color: '#1e293b' }}
                       >
                         <span className="py-1">
-                          <SlArrowRight className="text-blue-400 text-base shrink-0 " />
+                          <SlArrowRight className="text-blue-400 mt-2 text-base shrink-0 " />
                         </span>
                         <span
                           className="truncate-2-lines group-hover:underline group-hover:text-blue-700 transition"
                           style={{
-                            display: "-webkit-box",
+                            display: '-webkit-box',
                             WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            maxHeight: "3.2em",
-                            lineHeight: "1.6em",
-                            wordBreak: "break-word"
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxHeight: '3.2em',
+                            lineHeight: '1.6em',
+                            wordBreak: 'break-word',
                           }}
-                        >{post.title}</span>
+                        >
+                          {post.title}
+                        </span>
                       </Link>
                     ))}
                   </div>
@@ -237,8 +257,9 @@ const BlogPosts: React.FC = () => {
               </div>
             </div>
           </div>
+
           {/* Black line below trending */}
-          <div className="border-b border-black my-3"></div>
+          <div className="border-b border-black my-5"></div>
 
           {/* Other Blogs by Category (includes trending posts as well) */}
           <div className="rounded-md overflow-hidden w-full">
@@ -268,11 +289,17 @@ const BlogPosts: React.FC = () => {
                                 query: { title: post.title },
                               }}
                               className="flex items-start gap-2 text-base sm:text-[1.05rem] px-2 py-3 group"
-                              style={{ fontWeight: 500, color: "#1e293b" }}
+                              style={{ fontWeight: 500, color: '#1e293b' }}
                             >
-                              <SlArrowRight className="text-blue-400 text-base shrink-0" />
+                              <SlArrowRight className="text-blue-400 mt-2 text-base shrink-0" />
                               {isNew(post.date) && (
-                                <span className="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full mr-2 mt-0.5 shrink-0" style={{ minWidth: "38px", textAlign: "center" }}>
+                                <span
+                                  className="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full mr-2 mt-0.5 shrink-0"
+                                  style={{
+                                    minWidth: '38px',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   New
                                 </span>
                               )}
@@ -280,14 +307,14 @@ const BlogPosts: React.FC = () => {
                               <span
                                 className="truncate-2-lines group-hover:underline flex-1"
                                 style={{
-                                  display: "-webkit-box",
+                                  display: '-webkit-box',
                                   WebkitLineClamp: 2,
-                                  WebkitBoxOrient: "vertical",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                  maxHeight: "3.2em",
-                                  lineHeight: "1.6em",
-                                  wordBreak: "break-word"
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  maxHeight: '3.2em',
+                                  lineHeight: '1.6em',
+                                  wordBreak: 'break-word',
                                 }}
                               >
                                 {post.title}
@@ -305,11 +332,11 @@ const BlogPosts: React.FC = () => {
         </div>
 
         {/* Promotions (hidden on md/sm, show only on lg+) */}
-        <div className="hidden lg:block lg:w-[34%] lg:pl-4 pt-20">
+        <div className="hidden lg:block lg:w-[34%]">
           <aside
             className="flex flex-col gap-6 h-full sticky top-[106px]"
             aria-label="Promotions"
-            style={{ alignSelf: "flex-start" }}
+            style={{ alignSelf: 'flex-start' }}
           >
             {sideImages.map((img) => (
               <a
@@ -318,13 +345,13 @@ const BlogPosts: React.FC = () => {
                 rel="noopener noreferrer"
                 key={img.id}
                 className="bg-blue-50 rounded-xl overflow-hidden shadow flex flex-col border border-blue-100 hover:shadow-lg transition"
-                style={{ textDecoration: "none" }}
-                aria-label={img.name || "Promotion"}
+                style={{ textDecoration: 'none' }}
+                aria-label={img.name || 'Promotion'}
                 tabIndex={0}
               >
                 <img
                   src={img.image}
-                  alt={img.name || "Promotion"}
+                  alt={img.name || 'Promotion'}
                   className="w-full h-80 object-cover"
                   loading="lazy"
                   width={320}

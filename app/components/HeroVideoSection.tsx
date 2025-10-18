@@ -1,29 +1,30 @@
-"use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Head from "next/head";
-import Image from "next/image";
+'use client';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Head from 'next/head';
+import Image from 'next/image';
 
 const FEATURES = [
   {
-    title: "Web Development",
-    description: "Enterprise-grade websites and platforms built to scale.",
-    image: "/web.png",
+    title: 'Web Development',
+    description: 'Enterprise-grade websites and platforms built to scale.',
+    image: '/web.png',
   },
   {
-    title: "Mobile Apps",
-    description: "High-performance native and cross-platform mobile solutions.",
-    image: "/app.png",
+    title: 'Mobile Apps',
+    description: 'High-performance native and cross-platform mobile solutions.',
+    image: '/app.png',
   },
   {
-    title: "Automation Tools",
-    description: "Streamline operations with custom intelligent automation.",
-    image: "/automation.png",
+    title: 'Automation Tools',
+    description: 'Streamline operations with custom intelligent automation.',
+    image: '/automation.png',
   },
   {
-    title: "Digital Products",
-    description: "Bespoke digital experiences that solve real business challenges.",
-    image: "/digital.png",
+    title: 'Digital Products',
+    description:
+      'Bespoke digital experiences that solve real business challenges.',
+    image: '/digital.png',
   },
 ] as const;
 
@@ -34,7 +35,6 @@ export default function HeroVideoSection() {
 
   // Memoize theme colors and classes for performance
   const {
-    bgGradient,
     textColor,
     subTextColor,
     buttonPrimary,
@@ -42,31 +42,38 @@ export default function HeroVideoSection() {
     cardBg,
     dotActive,
     dotInactive,
-  } = useMemo(() => ({
-    bgGradient: "bg-gradient-to-b from-white via-gray-100 to-blue-100 dark:from-gray-900 dark:via-gray-950 dark:to-black",
-    textColor: "text-gray-900 dark:text-white",
-    subTextColor: "text-gray-600 dark:text-gray-300",
-    buttonPrimary: "bg-gradient-to-r from-blue-600 to-purple-500 text-white dark:from-blue-500 dark:to-purple-600",
-    buttonSecondary: "border border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600 dark:border-gray-600 dark:text-gray-300 dark:hover:border-blue-400 dark:hover:text-blue-400",
-    cardBg: "bg-white/90 backdrop-blur dark:bg-black/70",
-    dotActive: "bg-blue-600 dark:bg-blue-500",
-    dotInactive: "bg-gray-400 dark:bg-gray-600",
-  }), []);
+  } = useMemo(
+    () => ({
+      textColor: 'text-gray-900 dark:text-white',
+      subTextColor: 'text-gray-800 dark:text-gray-300',
+      buttonPrimary:
+        'bg-gradient-to-r from-blue-600 to-purple-500 text-white dark:from-blue-500 dark:to-purple-600',
+      buttonSecondary:
+        'bg-white/90 text-gray-900 dark:bg-black/70 dark:text-white border border-gray-300 dark:border-gray-600',
+      cardBg: 'bg-white/90 backdrop-blur dark:bg-black/70',
+      dotActive: 'bg-blue-600 dark:bg-blue-500',
+      dotInactive: 'bg-gray-400 dark:bg-gray-600',
+    }),
+    []
+  );
 
   // Auto-advance logic, robust against unmount/mount
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex(prev => (prev + 1) % FEATURES.length);
+      setIndex((prev) => (prev + 1) % FEATURES.length);
     }, AUTO_ADVANCE_INTERVAL);
     return () => clearInterval(interval);
   }, []);
 
   // Keyboard accessibility for carousel dots
-  const handleDotKeyDown = useCallback((i: number, e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
-      setIndex(i);
-    }
-  }, []);
+  const handleDotKeyDown = useCallback(
+    (i: number, e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        setIndex(i);
+      }
+    },
+    []
+  );
 
   // Prefetch images for smooth transitions (only the next one)
   useEffect(() => {
@@ -76,12 +83,13 @@ export default function HeroVideoSection() {
   }, [index]);
 
   // SEO meta tags
-  const seoTitle = "ERRTEKNALOZY SOLUTIONS | Digital Innovation Experts";
-  const seoDesc = "We build world-class digital solutions: websites, mobile apps, automation tools, and AI-driven platforms for enterprises.";
+  const seoTitle = 'Talent With Us | Digital Innovation Experts';
+  const seoDesc =
+    'We build world-class digital solutions: websites, mobile apps, automation tools, and AI-driven platforms for enterprises.';
 
   return (
     <section
-      className={`relative min-h-screen flex flex-col lg:flex-row items-center justify-between px-6 lg:px-24 py-16 ${bgGradient} ${textColor} overflow-hidden transition-colors duration-500`}
+      className={`relative min-h-screen flex flex-col lg:flex-row items-center justify-between px-6 lg:px-24 py-16 ${textColor} overflow-hidden transition-colors duration-500`}
       aria-label="Hero Banner: Digital Innovation Experts"
     >
       <Head>
@@ -102,24 +110,28 @@ export default function HeroVideoSection() {
         className="lg:w-1/2 z-10"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
       >
-        <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+        <h1 className="text-4xl text-center md:text-left md:text-6xl font-bold leading-tight mb-6">
+          <span className="bg-clip-text  text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
             Digital Innovation
           </span>
           <br />
-          That Moves Enterprises Forward
+          <span className="text-black">That Moves Enterprises Forward</span>
         </h1>
-        <p className={`text-lg md:text-xl mb-8 max-w-xl ${subTextColor}`}>
-          From concept to launch, we build performant, scalable, and stunning digital products tailored for enterprise impact.
+        <p className={`text-lg text-black/80 md:text-xl mb-8 max-w-xl`}>
+          From concept to launch, we build performant, scalable, and stunning
+          digital products tailored for enterprise impact.
         </p>
-        <nav aria-label="Hero Call to Action" className="flex flex-col sm:flex-row gap-4">
+        <nav
+          aria-label="Hero Call to Action"
+          className="flex flex-col sm:flex-row gap-4"
+        >
           <motion.a
             href="/contact"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
-            className={`px-6 py-3 rounded-full text-lg font-medium shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 ${buttonPrimary} transition`}
+            className={`px-6 py-3 rounded-full text-center text-lg font-medium shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 ${buttonPrimary} transition`}
             tabIndex={0}
             aria-label="Start Your Project"
           >
@@ -129,7 +141,7 @@ export default function HeroVideoSection() {
             href="/work"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
-            className={`px-6 py-3 rounded-full text-lg font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-400 ${buttonSecondary}`}
+            className={`px-6 py-3 rounded-full text-center text-lg font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-400 ${buttonSecondary}`}
             tabIndex={0}
             aria-label="Explore Our Work"
           >
@@ -139,7 +151,7 @@ export default function HeroVideoSection() {
       </motion.div>
 
       {/* Right: Optimized Image Carousel */}
-      <div className="lg:w-1/2 relative mt-12 lg:mt-0 z-10">
+      <div className="lg:w-1/2 w-full relative mt-12 lg:mt-0 z-10">
         <div className="relative w-full aspect-[4/3] overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 shadow-xl">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -147,9 +159,9 @@ export default function HeroVideoSection() {
               initial={{ opacity: 0, x: 60 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -60 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
               className="absolute inset-0"
-              style={{ willChange: "opacity, transform" }}
+              style={{ willChange: 'opacity, transform' }}
             >
               <Image
                 src={FEATURES[index].image}
@@ -158,12 +170,18 @@ export default function HeroVideoSection() {
                 priority={index === 0}
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover w-full h-full rounded-2xl select-none"
-                loading={index === 0 ? "eager" : "lazy"}
+                loading={index === 0 ? 'eager' : 'lazy'}
                 draggable={false}
               />
-              <div className={`absolute bottom-0 left-0 right-0 px-6 py-4 ${cardBg} rounded-b-2xl`}>
-                <h3 className="text-xl font-semibold">{FEATURES[index].title}</h3>
-                <p className={`text-base ${subTextColor}`}>{FEATURES[index].description}</p>
+              <div
+                className={`absolute bottom-0 left-0 right-0 px-6 py-4 ${cardBg} rounded-b-2xl`}
+              >
+                <h3 className="text-xl font-semibold">
+                  {FEATURES[index].title}
+                </h3>
+                <p className={`text-base ${subTextColor}`}>
+                  {FEATURES[index].description}
+                </p>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -178,8 +196,10 @@ export default function HeroVideoSection() {
             <button
               key={feat.title}
               onClick={() => setIndex(i)}
-              onKeyDown={e => handleDotKeyDown(i, e)}
-              className={`w-3 h-3 rounded-full transition-all outline-none focus:ring-2 focus:ring-blue-400 ${i === index ? `${dotActive} scale-110` : dotInactive}`}
+              onKeyDown={(e) => handleDotKeyDown(i, e)}
+              className={`w-3 h-3 rounded-full transition-all outline-none focus:ring-2 focus:ring-blue-400 ${
+                i === index ? `${dotActive} scale-110` : dotInactive
+              }`}
               aria-label={`Show ${feat.title} slide`}
               aria-current={i === index}
               tabIndex={0}
@@ -196,7 +216,7 @@ export default function HeroVideoSection() {
 // import { motion, AnimatePresence } from 'framer-motion';
 // import { useInView } from 'react-intersection-observer';
 // import Head from 'next/head';
-// import { 
+// import {
 //   ArrowPathIcon,
 //   CodeBracketIcon,
 //   CpuChipIcon,
@@ -289,10 +309,6 @@ export default function HeroVideoSection() {
 //         ))}
 //       </div>
 
-
-     
-
-    
 //       <section className="relative min-h-screen flex items-center pt-20 pb-32">
 //         <div className="container mx-auto px-6 z-10">
 //           <div className="flex flex-col lg:flex-row items-center">
@@ -405,7 +421,6 @@ export default function HeroVideoSection() {
 //         </motion.div>
 //       </section>
 
- 
 //       <section id="services" className="py-20 relative" ref={ref1}>
 //         <div className="container mx-auto px-6">
 //           <motion.div
@@ -481,11 +496,6 @@ export default function HeroVideoSection() {
 //         </div>
 //       </section>
 
-    
-
-
-
-   
 //     </div>
 //   );
 // };
