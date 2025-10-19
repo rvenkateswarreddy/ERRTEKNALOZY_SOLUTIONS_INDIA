@@ -240,7 +240,7 @@ function WhyChooseUs() {
           transition={{ delay: 1.2 }}
           className="mt-20 text-center"
         >
-          <div className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+          <div className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-[#00AEEF] to-[#0052CC] rounded-full shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
             Request Consultation
             <svg
               className="ml-2 w-5 h-5"

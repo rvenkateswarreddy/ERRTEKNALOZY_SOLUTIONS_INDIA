@@ -53,7 +53,7 @@ export default function Testimonials() {
   return (
     <section className="relative py-24 px-4 sm:px-8 bg-gradient-to-br from-[#e6f0ff] via-[#edf4ff] to-[#f7faff]">
       <div className="max-w-5xl mx-auto text-center mb-14">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 via-blue-500 to-cyan-400">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]">
           What Industry Leaders Say
         </h2>
         <p className="text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
@@ -81,7 +81,7 @@ export default function Testimonials() {
                   alt={t.name}
                   className={`w-16 h-16 md:w-20 md:h-20 rounded-full border-4 ${
                     idx === active
-                      ? 'border-fuchsia-400 shadow-xl'
+                      ? 'border-[#1983de] shadow-xl'
                       : 'border-gray-400'
                   }`}
                   loading="lazy"

@@ -244,7 +244,8 @@ export default function Navbar() {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="px-4 py-2 bg-gradient-to-r from-black to-purple-600 cursor-pointer text-white rounded-md font-medium text-sm shadow-lg hover:shadow-primary/30 transition-all"
+                className="px-4 py-2 bg-gradient-to-r from-[#00AEEF] to-[#0052CC]
+ cursor-pointer text-white rounded-md font-medium text-sm shadow-lg hover:shadow-primary/30 transition-all"
               >
                 Book Consultation
               </motion.button>
@@ -256,7 +257,10 @@ export default function Navbar() {
                       className="flex items-center space-x-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
                       aria-label="Go to dashboard"
                     >
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-r from-black to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                      <div
+                        className="h-8 w-8 rounded-full bg-gradient-to-r from-[#00AEEF] to-[#0052CC]
+ flex items-center justify-center text-white text-sm font-bold"
+                      >
                         {user.displayName?.charAt(0) || 'U'}
                       </div>
                       {/* <span className="text-sm font-medium text-foreground/90 group-hover:text-primary">
@@ -386,7 +390,7 @@ export default function Navbar() {
               <div className="mt-8">
                 <motion.button
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-black to-purple-600 text-white rounded-md font-medium text-base shadow-lg hover:shadow-primary/30 transition-all"
+                  className="w-full px-6 py-3 bg-gradient-to-r from-[#00AEEF] to-[#0052CC] text-white rounded-md font-medium text-base shadow-lg hover:shadow-primary/30 transition-all"
                 >
                   Book Free Consultation
                 </motion.button>

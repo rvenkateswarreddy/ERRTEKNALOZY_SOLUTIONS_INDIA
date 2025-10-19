@@ -30,7 +30,7 @@ export default function AboutUs() {
         <link rel="canonical" href="https://www.talentwithus.com/about" />
       </Head>
       <section
-        className="py-16 px-4 bg-gradient-to-br from-[#E3F1F5] via-[#DDEFF2] to-[#C8E7EE]
+        className="py-8 md:py-16 px-4 bg-gradient-to-br from-[#E3F1F5] via-[#DDEFF2] to-[#C8E7EE]
  min-h-screen text-white"
         aria-labelledby="aboutus-heading"
       >
@@ -54,21 +54,21 @@ export default function AboutUs() {
               <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center md:justify-start">
                 <a
                   href="#whatwedo"
-                  className="px-6 py-2 bg-cyan-600 text-cynan rounded-full font-semibold shadow  hover:bg-cyan-800 focus:ring-2 transition ring-cyan-400"
+                  className="px-6 py-2 bg-cyan-600 box-border text-cynan rounded-full font-semibold shadow  hover:bg-cyan-800 focus:ring-2 transition ring-cyan-400"
                   aria-label="What We Do"
                 >
                   What We Do
                 </a>
                 <a
                   href="#team"
-                  className="px-6 py-2 bg-transparent border-2 border-cyan-600 text-cyan-600 rounded-full font-semibold shadow transition hover:bg-cyan-700 hover:text-white focus:ring-2 ring-cyan-600"
+                  className="px-6 py-2 bg-transparent box-border border-2 border-cyan-600 text-cyan-600 rounded-full font-semibold shadow transition hover:bg-cyan-700 hover:text-white focus:ring-2 ring-cyan-600"
                   aria-label="Meet Our Team"
                 >
                   Meet Our Team
                 </a>
                 <a
                   href="#contact"
-                  className="px-6 py-2 bg-cyan-900 text-cyan-200 rounded-full font-semibold shadow transition hover:bg-cyan-700 hover:text-white focus:ring-2 ring-cyan-400"
+                  className="px-6 py-2 bg-cyan-900 box-border text-cyan-200 rounded-full font-semibold shadow transition hover:bg-cyan-700 hover:text-white focus:ring-2 ring-cyan-400"
                   aria-label="Contact Us"
                 >
                   Contact Us
@@ -261,105 +261,139 @@ export default function AboutUs() {
           </div>
 
           {/* Why Choose Us */}
-          <div id="whychooseus">
-            <h2 className="text-3xl font-bold text-center mb-10 text-cyan-600">
-              🌟 Why Choose Talent With Us?
+          <div
+            id="whychooseus"
+            className="py-12 bg-gradient-to-tr from-blue-50 to-cyan-100 min-h-full"
+          >
+            <h2 className="text-3xl font-bold text-center mb-10 text-cyan-700 flex items-center justify-center gap-2">
+              <span className="hidden sm:block">🌟</span> Why Choose Talent With
+              Us?
             </h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-[#18223a] rounded-2xl shadow-lg border-2 border-cyan-700 p-7 flex flex-col gap-4 items-center hover:scale-[1.02] transition">
-                <ul className="space-y-3 text-gray-200 text-lg">
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <b>Client-Centric Approach</b> – We listen, strategize, and
-                    deliver exactly what you envision.
+            <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-8">
+              {/* Card */}
+              <div className="bg-[#deeaf3] shadow-xl border-t-8 md:border-l-8 md:border-t-0 border-cyan-500 rounded-2xl p-7 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col gap-4">
+                <ul className="space-y-5 text-gray-700 text-lg">
+                  <li className="flex items-start gap-3">
+                    <span className="text-cyan-500 text-2xl">🤝</span>
+                    <div>
+                      <b>Client-Centric Approach</b> – We listen, strategize,
+                      and deliver exactly what you envision.
+                    </div>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <b>Enterprise-Grade Security & Quality</b> – ISO practices,
-                    rigorous QA, and secure development.
+                  <li className="flex items-start gap-3">
+                    <span className="text-cyan-500 text-2xl">🔒</span>
+                    <div>
+                      <b>Enterprise-Grade Security & Quality</b> – ISO
+                      practices, rigorous QA, and secure development.
+                    </div>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <b>Agile & Transparent Process</b> – Fast, flexible, and
-                    always in touch.
+                  <li className="flex items-start gap-3">
+                    <span className="text-cyan-500 text-2xl">⚡</span>
+                    <div>
+                      <b>Agile & Transparent Process</b> – Fast, flexible, and
+                      always in touch.
+                    </div>
                   </li>
                 </ul>
               </div>
-              <div className="bg-[#18223a] rounded-2xl shadow-lg border-2 border-cyan-700 p-7 flex flex-col gap-4 items-center hover:scale-[1.02] transition">
-                <ul className="space-y-3 text-gray-200 text-lg">
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <b>Innovation First</b> – We’re ahead of trends: AI, cloud,
-                    and modern frameworks.
+              {/* Card */}
+              <div className="bg-[#deeaf3] shadow-xl border-t-8 md:border-l-8 md:border-t-0 border-yellow-500 rounded-2xl p-7 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col gap-4">
+                <ul className="space-y-5 text-gray-700 text-lg">
+                  <li className="flex items-start gap-3">
+                    <span className="text-yellow-500 text-2xl">💡</span>
+                    <div>
+                      <b>Innovation First</b> – We're ahead of trends: AI,
+                      cloud, and modern frameworks.
+                    </div>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <b>24/7 Support</b> – Prompt, reliable, and ongoing help
-                    even after delivery.
+                  <li className="flex items-start gap-3">
+                    <span className="text-yellow-500 text-2xl">⏰</span>
+                    <div>
+                      <b>24/7 Support</b> – Prompt, reliable, and ongoing help
+                      even after delivery.
+                    </div>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-cyan-400">✅</span>
-                    <b>End-to-End Ownership</b> – From discovery to launch and
-                    beyond, we’re with you.
+                  <li className="flex items-start gap-3">
+                    <span className="text-yellow-500 text-2xl">🚀</span>
+                    <div>
+                      <b>End-to-End Ownership</b> – From discovery to launch and
+                      beyond, we're with you.
+                    </div>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
 
-          {/* Contact */}
-          <div id="contact" className="flex justify-center pt-16 pb-8">
-            <div className="w-full max-w-5xl bg-gradient-to-br from-[#1e2a44] to-[#17213b] rounded-3xl shadow-2xl border-2 border-cyan-700 p-10 flex flex-col items-center">
-              <h2 className="text-3xl font-bold mb-3 flex items-center gap-2 text-cyan-400">
-                <span role="img" aria-label="handshake">
+          {/* Contact Section */}
+          <div
+            id="contact"
+            className="flex justify-center mb-2 py-7 md:py-14 bg-gradient-to-br from-[#1e2a44] to-[#17213b]"
+          >
+            <div className="w-full max-w-5xl mx-4 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl p-10 flex flex-col items-center">
+              <h2 className="text-xl md:text-3xl font-bold mb-3 flex items-center gap-2 text-cyan-300 drop-shadow-lg">
+                <span className="w-10 h-10 bg-cyan-700/30 rounded-full flex items-center justify-center text-xl md:text-3xl shadow-lg">
                   🤝
                 </span>
                 Let’s Build Something Amazing Together
               </h2>
-              <p className="text-gray-300 mb-6 text-center">
+              <p className="text-gray-200 mb-7 text-center text-lg max-w-2xl bg-white/10 px-4 py-3 rounded-xl shadow">
                 Have a project, idea, or digital challenge? Let's collaborate
                 and turn your vision into reality. Our experts are ready to help
                 you succeed.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-8 w-full">
-                <div className="flex flex-col items-center gap-1 w-full">
-                  <span className="text-base text-cyan-300 font-semibold flex items-center gap-2">
-                    <span role="img" aria-label="mail">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-8 w-full mt-2">
+                {/* Email */}
+                <div className="flex flex-col items-center gap-2 w-full bg-white/10 p-6 rounded-2xl shadow hover:scale-105 transition group">
+                  <span className="flex items-center gap-2">
+                    <span className="w-9 h-9 bg-cyan-400/30 rounded-full flex items-center justify-center text-xl group-hover:bg-cyan-400/60 transition">
                       📧
                     </span>
-                    Email
+                    <span className="text-cyan-200 font-semibold text-base">
+                      Email
+                    </span>
                   </span>
                   <a
                     href="mailto:info@talentwithus.com"
-                    className="text-lg text-cyan-200 underline hover:text-cyan-400 break-all"
+                    className="text-lg text-cyan-100 underline hover:text-cyan-300 break-all"
                   >
                     info@talentwithus.com
                   </a>
                 </div>
-                <div className="flex flex-col items-center gap-1 w-full">
-                  <span className="text-base text-cyan-300 font-semibold flex items-center gap-2">
-                    <span role="img" aria-label="phone">
+                {/* Divider (hidden on small screens) */}
+                <div className="hidden sm:block h-16 w-0.5 bg-cyan-700/40 rounded-xl"></div>
+                {/* Call */}
+                <div className="flex flex-col items-center gap-2 w-full bg-white/10 p-6 rounded-2xl shadow hover:scale-105 transition group">
+                  <span className="flex items-center gap-2">
+                    <span className="w-9 h-9 bg-cyan-400/30 rounded-full flex items-center justify-center text-xl group-hover:bg-cyan-400/60 transition">
                       📞
                     </span>
-                    Call
+                    <span className="text-cyan-200 font-semibold text-base">
+                      Call
+                    </span>
                   </span>
                   <a
                     href="tel:+919812345678"
-                    className="text-lg text-cyan-200 underline hover:text-cyan-400"
+                    className="text-lg text-cyan-100 underline hover:text-cyan-300"
                   >
                     +91-9812345678
                   </a>
                 </div>
-                <div className="flex flex-col items-center gap-1 w-full">
-                  <span className="text-base text-cyan-300 font-semibold flex items-center gap-2">
-                    <span role="img" aria-label="globe">
+                {/* Divider (hidden on small screens) */}
+                <div className="hidden sm:block h-16 w-0.5 bg-cyan-700/40 rounded-xl"></div>
+                {/* Website */}
+                <div className="flex flex-col items-center gap-2 w-full bg-white/10 p-6 rounded-2xl shadow hover:scale-105 transition group">
+                  <span className="flex items-center gap-2">
+                    <span className="w-9 h-9 bg-cyan-400/30 rounded-full flex items-center justify-center text-xl group-hover:bg-cyan-400/60 transition">
                       🌐
                     </span>
-                    Website
+                    <span className="text-cyan-200 font-semibold text-base">
+                      Website
+                    </span>
                   </span>
                   <a
                     href="https://www.talentwithus.com"
-                    className="text-lg text-cyan-200 underline hover:text-cyan-400"
+                    className="text-lg text-cyan-100 underline hover:text-cyan-300"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

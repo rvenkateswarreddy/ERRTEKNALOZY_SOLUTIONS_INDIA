@@ -106,7 +106,7 @@ const ContactPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative z-10">
           {/* Heading Section */}
           <header className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-fuchsia-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent mb-5 tracking-tight flex items-center justify-center gap-3">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-[#1EB8F3] to-[#0066FF] bg-clip-text text-transparent mb-5 tracking-tight flex items-center justify-center gap-3">
               <span>Connect with Talent With Us</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
@@ -142,8 +142,7 @@ const ContactPage = () => {
                 aria-label="Contact Information"
               >
                 <h2 className="text-2xl font-bold text-fuchsia-400 mb-6 flex items-center gap-2">
-                  <FiMail className="text-cyan-400" aria-hidden="true" />{' '}
-                  Contact Information
+                  <FiMail aria-hidden="true" /> Contact Information
                 </h2>
                 <ul className="space-y-6">
                   <li className="flex items-center gap-4">
@@ -197,7 +196,7 @@ const ContactPage = () => {
                       <div className="text-gray-400 text-xs uppercase tracking-widest font-semibold">
                         Address
                       </div>
-                      <address className="not-italic text-blue-100 text-lg font-semibold">
+                      <address className="not-italic text-blue-200 text-lg font-semibold">
                         Tirupati, Andhra Pradesh, India
                       </address>
                     </div>
@@ -211,8 +210,8 @@ const ContactPage = () => {
               className="bg-[#13151b] p-10 rounded-3xl shadow-xl h-fit sticky top-8"
               aria-label="Contact Form"
             >
-              <h2 className="text-2xl font-bold text-cyan-400 mb-6 flex items-center gap-2">
-                <FiSend className="text-fuchsia-400" aria-hidden="true" />
+              <h2 className="text-2xl text-[#1EB8F3] font-bold mb-6 flex items-center gap-2">
+                <FiSend className="" aria-hidden="true" />
                 Send Us a Message
               </h2>
               {sent ? (
@@ -253,7 +252,7 @@ const ContactPage = () => {
                       type="text"
                       id="name"
                       name="name"
-                      className="w-full px-4 py-3 bg-[#181c2b] border-none rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition-all font-medium"
+                      className="w-full px-4 py-3 bg-[#181c2b] border-none rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all font-medium"
                       placeholder="Enter your name"
                       autoComplete="name"
                       required
@@ -278,7 +277,7 @@ const ContactPage = () => {
                       type="email"
                       id="email"
                       name="email"
-                      className="w-full px-4 py-3 bg-[#181c2b] border-none rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition-all font-medium"
+                      className="w-full px-4 py-3 bg-[#181c2b] border-none rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all font-medium"
                       placeholder="Enter your email"
                       autoComplete="email"
                       required
@@ -302,7 +301,7 @@ const ContactPage = () => {
                       type="text"
                       id="subject"
                       name="subject"
-                      className="w-full px-4 py-3 bg-[#181c2b] border-none rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition-all font-medium"
+                      className="w-full px-4 py-3 bg-[#181c2b] border-none rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all font-medium"
                       placeholder="What's this about?"
                       required
                       minLength={3}
@@ -326,7 +325,7 @@ const ContactPage = () => {
                       id="message"
                       name="message"
                       rows={5}
-                      className="w-full px-4 py-3 bg-[#181c2b] border-none rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition-all font-medium"
+                      className="w-full px-4 py-3 bg-[#181c2b] border-none rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all font-medium"
                       placeholder="Tell us about your project..."
                       required
                       minLength={10}
@@ -343,7 +342,7 @@ const ContactPage = () => {
                   )}
                   <button
                     type="submit"
-                    className={`w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white font-bold rounded-lg hover:from-cyan-500 hover:to-fuchsia-500 cursor-pointer transition-all duration-300 group mt-2 text-lg shadow-xl ${
+                    className={`w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-[#1EB8F3] to-[#0066FF] text-white font-bold rounded-lg hover:from-[#0066FF] hover:to-[#1EB8F3] cursor-pointer transition-all duration-300 group mt-2 text-lg shadow-xl ${
                       sending ? 'opacity-70 cursor-not-allowed' : ''
                     }`}
                     disabled={sending}

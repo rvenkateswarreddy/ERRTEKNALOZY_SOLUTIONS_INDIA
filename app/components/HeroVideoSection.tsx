@@ -48,8 +48,7 @@ export default function HeroVideoSection() {
       subTextColor: 'text-gray-800 dark:text-gray-300',
       buttonPrimary:
         'bg-gradient-to-r from-blue-600 to-purple-500 text-white dark:from-blue-500 dark:to-purple-600',
-      buttonSecondary:
-        'bg-white/90 text-gray-900 dark:bg-black/70 dark:text-white border border-gray-300 dark:border-gray-600',
+      buttonSecondary: 'text-white bg-gradient-to-r from-gray-600 to-black',
       cardBg: 'bg-white/90 backdrop-blur dark:bg-black/70',
       dotActive: 'bg-blue-600 dark:bg-blue-500',
       dotInactive: 'bg-gray-400 dark:bg-gray-600',
@@ -113,7 +112,10 @@ export default function HeroVideoSection() {
         transition={{ duration: 0.7, ease: 'easeOut' }}
       >
         <h1 className="text-4xl text-center md:text-left md:text-6xl font-bold leading-tight mb-6">
-          <span className="bg-clip-text  text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+          <span
+            className="bg-clip-text  text-transparent bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]
+"
+          >
             Digital Innovation
           </span>
           <br />
@@ -131,7 +133,8 @@ export default function HeroVideoSection() {
             href="/contact"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
-            className={`px-6 py-3 rounded-full text-center text-lg font-medium shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 ${buttonPrimary} transition`}
+            className={`px-6 py-3 rounded-full text-center text-lg font-medium shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]
+ transition`}
             tabIndex={0}
             aria-label="Start Your Project"
           >

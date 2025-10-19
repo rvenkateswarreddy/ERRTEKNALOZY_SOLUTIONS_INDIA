@@ -90,7 +90,7 @@ const TechStackShowcase = () => {
       <div className="max-w-7xl mx-auto text-center mb-16">
         <h2
           id="tech-stack-heading"
-          className="text-4xl sm:text-5xl font-bold my-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-orange-400"
+          className="text-4xl sm:text-5xl font-bold my-6 text-transparent bg-clip-text bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]"
         >
           Technologies We Master
         </h2>
@@ -114,7 +114,7 @@ const TechStackShowcase = () => {
 
       <div className="text-center mt-12 mb-10">
         <button
-          className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white px-8 py-3 rounded-xl shadow-lg font-semibold text-lg hover:opacity-90 hover:scale-105 transition-transform duration-300"
+          className="bg-gradient-to-r from-[#00AEEF] to-[#0052CC] text-white px-8 py-3 rounded-xl shadow-lg font-semibold text-lg hover:opacity-90 hover:scale-105 transition-transform duration-300"
           aria-label="Explore our full repository"
         >
           Explore Our Full Repository

@@ -78,7 +78,7 @@ export default function Footer() {
         <div className="flex items-center md:items-start flex-col gap-4 md:w-1/4">
           <Link
             href="/"
-            className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-orange-400"
+            className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]"
           >
             Talent With Us
           </Link>

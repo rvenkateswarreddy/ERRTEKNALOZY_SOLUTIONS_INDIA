@@ -42,7 +42,7 @@ const CompanyBanner = () => {
       </div>
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-blue-700 via-fuchsia-500 to-orange-400">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]">
           Building Exceptional Digital Products
         </h1>
         <p className="mt-6 text-lg sm:text-xl max-w-3xl mx-auto text-black/70">
@@ -53,7 +53,7 @@ const CompanyBanner = () => {
         </p>
         <div className="mt-10">
           <button
-            className="bg-gradient-to-r from-fuchsia-600 to-cyan-500 text-white px-8 py-3 rounded-xl shadow-lg text-lg font-semibold hover:scale-105 hover:opacity-90 transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-fuchsia-300 dark:focus:ring-cyan-700"
+            className="bg-gradient-to-r from-[#00AEEF] to-[#0052CC] text-white px-8 py-3 rounded-xl shadow-lg text-lg font-semibold hover:scale-105 hover:opacity-90 transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-fuchsia-300 dark:focus:ring-cyan-700"
             onClick={() => setShowModal(true)}
           >
             Schedule a Call
