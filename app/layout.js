@@ -15,7 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'Talent With Us',
+  title: {
+    default: 'Talent With Us',
+    template: '%s | Talent With Us',
+  },
   description:
     'Talent With Us connects skilled professionals and growing businesses through innovative digital solutions. We specialize in empowering talent, fostering remote opportunities, and helping organizations build exceptional teams worldwide.',
 };

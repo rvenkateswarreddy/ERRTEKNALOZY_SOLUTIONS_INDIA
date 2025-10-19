@@ -1,13 +1,38 @@
-'use client';
+// 'use client';
 import React from 'react';
-import Head from 'next/head';
+// import Head from 'next/head';
 import TeamSection from '../components/TeamSection';
+
+export const metadata = {
+  title: 'About Us | Talent With Us - Digital Transformation Experts',
+  description:
+    'Talent With Us: Your technology partner for websites, apps, project support, documentation, and innovative digital solutions. Discover our mission, vision, values, and expert team.',
+  robots: 'index, follow',
+  openGraph: {
+    title: 'About Us | Talent With Us',
+    description:
+      'Transform your business with Talent With Us. We deliver world-class digital products, project support, code contests, and interactive tools. Meet our team!',
+    type: 'website',
+    url: 'https://www.talentwithus.com/about',
+    images: [
+      {
+        url: 'https://www.talentwithus.com/og-aboutus.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'About Talent With Us',
+      },
+    ],
+  },
+  alternates: {
+    canonical: 'https://www.talentwithus.com/about',
+  },
+};
 
 export default function AboutUs() {
   return (
     <>
       {/* SEO & Open Graph */}
-      <Head>
+      {/* <Head>
         <title>
           About Us | Talent With Us - Digital Transformation Experts
         </title>
@@ -28,7 +53,8 @@ export default function AboutUs() {
           content="https://www.talentwithus.com/og-aboutus.jpg"
         />
         <link rel="canonical" href="https://www.talentwithus.com/about" />
-      </Head>
+      </Head> */}
+
       <section
         className="py-8 md:py-16 px-4 bg-gradient-to-br from-[#E3F1F5] via-[#DDEFF2] to-[#C8E7EE]
  min-h-screen text-white"

@@ -126,10 +126,10 @@ export default function Navbar() {
   const getLinkClass = (linkId: string) =>
     cn(
       'px-3 py-2 rounded-md transition-all text-sm font-medium flex items-center',
-      'hover:text-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+      ' ',
       pathname === linkId || pathname.startsWith(`${linkId}/`)
-        ? 'text-primary bg-accent'
-        : 'text-foreground/90 hover:text-primary'
+        ? 'text-[#039fe3]'
+        : 'text-black hover:text-[#039fe3]'
     );
 
   const handleMobileLinkClick = (link: any) => {
@@ -149,7 +149,7 @@ export default function Navbar() {
             animate={{ width: '100%', opacity: 1 }}
             exit={{ width: '100%', opacity: 0 }}
             transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-[100]"
+            className="fixed top-0 left-0 h-1 bg-gradient-to-r from-[#0056D2] via-[#007BFF] to-[#00A8FF] z-[100]"
             aria-label="Page loading indicator"
             role="status"
           />
@@ -160,7 +160,7 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
         className={cn(
-          'fixed top-0 inset-x-0 z-50 bg-background/80 transition-shadow transition-blur',
+          'fixed top-0 inset-x-0 z-50 bg-white/60 transition-shadow transition-blur',
           scrolled
             ? 'border-border/50 shadow-lg backdrop-blur-lg'
             : 'border-transparent'
@@ -298,9 +298,9 @@ export default function Navbar() {
                 aria-controls="mobile-menu"
               >
                 {isOpen ? (
-                  <X className="h-5 w-5" />
+                  <X className="h-5 w-5  cursor-pointer" />
                 ) : (
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-5 w-5 cursor-pointer" />
                 )}
               </button>
             </div>
@@ -316,7 +316,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-              className="md:hidden text-center bg-white inset-0 backdrop-blur-lg z-60 pt-8 pb-4 px-6 overflow-y-auto"
+              className="md:hidden text-center bg-white/60 inset-0 backdrop-blur-lg z-60 pt-8 pb-4 px-6 overflow-y-auto"
               role="dialog"
               aria-modal="true"
             >

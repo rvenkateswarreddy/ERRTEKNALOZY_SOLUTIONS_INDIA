@@ -1,212 +1,36 @@
-'use client';
-import React from 'react';
-import OurWorks from '../components/OurWorks';
-import WhatWeOffer from '../components/WhatWeOffer';
-import Testimonial from '../components/Testimonial';
-import hero from '../../public/assets/projects.jpg';
-import Image from 'next/image';
-// React Icons Imports
-import {
-  FaReact,
-  FaNodeJs,
-  FaPython,
-  FaWordpress,
-  FaSearch,
-  FaCss3Alt,
-} from 'react-icons/fa';
-import {
-  SiNextdotjs,
-  SiTailwindcss,
-  SiMongodb,
-  SiFirebase,
-} from 'react-icons/si';
-import ContactSection from '../components/ContactSection';
+// app/digital-lab/page.jsx
+import DigitalLabClient from './DigitalLabClient';
 
-const workflow = [
-  {
-    icon: '📝',
-    title: 'Requirement Gathering',
-    desc: 'We listen, analyze, and document your needs.',
+export const metadata = {
+  title: 'Digital Lab',
+  description:
+    'Discover Talent With Us Digital Lab — where we transform creative concepts into cutting-edge digital experiences using React, Next.js, and Tailwind CSS.',
+  openGraph: {
+    title: 'Digital Lab | Talent With Us',
+    description:
+      'Explore our digital innovation lab that blends design, technology, and strategy to craft impactful web experiences.',
+    url: 'https://talentwithus.com/digital-lab',
+    type: 'website',
+    images: [
+      {
+        url: 'https://talentwithus.com/assets/projects.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Talent With Us Digital Lab',
+      },
+    ],
   },
-  {
-    icon: '🎨',
-    title: 'Planning & Design',
-    desc: 'Wireframes, UI/UX, and clear milestones.',
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Talent With Us — Digital Lab',
+    description:
+      'Pushing boundaries in design and technology to create immersive digital solutions.',
+    images: ['https://talentwithus.com/assets/projects.jpg'],
   },
-  {
-    icon: '💻',
-    title: 'Development',
-    desc: 'Agile coding, regular updates, and transparency.',
-  },
-  {
-    icon: '🧪',
-    title: 'Testing',
-    desc: 'Manual and automated QA for a flawless experience.',
-  },
-  {
-    icon: '🚀',
-    title: 'Launch & Support',
-    desc: 'Go-live, monitor, and support post-delivery.',
-  },
-];
+  robots: { index: true, follow: true },
+  alternates: { canonical: 'https://talentwithus.com/digital-lab' },
+};
 
-const techStack = [
-  { icon: <FaReact className="text-cyan-400" />, name: 'React' },
-  { icon: <SiNextdotjs className="text-gray-50" />, name: 'Next.js' },
-  { icon: <FaNodeJs className="text-green-500" />, name: 'Node.js' },
-  { icon: <SiTailwindcss className="text-cyan-300" />, name: 'Tailwind CSS' },
-  { icon: <SiMongodb className="text-green-400" />, name: 'MongoDB' },
-  { icon: <SiFirebase className="text-yellow-400" />, name: 'Firebase' },
-  { icon: <FaPython className="text-yellow-300" />, name: 'Python' },
-  { icon: <FaWordpress className="text-blue-400" />, name: 'WordPress' },
-  { icon: <FaSearch className="text-pink-400" />, name: 'SEO Tools' },
-];
-
-export default function Home() {
-  return (
-    <main className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#0a183d] via-[#202e4d] to-[#191c24] text-white py-20 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10 z-10 relative">
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-5 leading-tight">
-              Bringing Ideas to Life with{' '}
-              <span className="text-cyan-300">Code</span>,{' '}
-              <span className="text-blue-300">Design</span> &{' '}
-              <span className="text-indigo-200">Strategy</span>
-            </h1>
-            <p className="text-lg mb-8 text-cyan-100">
-              Explore our digital solutions crafted for impact — from powerful
-              web apps to SEO-optimized websites.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <a
-                href="#contact"
-                className="px-6 py-3 rounded-full bg-cyan-500 text-white font-semibold shadow hover:bg-cyan-600 transition"
-              >
-                Start Your Project
-              </a>
-              <a
-                href="#work"
-                className="px-6 py-3 rounded-full border border-cyan-300 text-cyan-200 font-semibold hover:bg-cyan-800 transition"
-              >
-                See Our Work
-              </a>
-            </div>
-          </div>
-          <div className="flex-1 flex justify-center">
-            <Image
-              src={hero}
-              alt="Digital Solutions"
-              width={520}
-              className="drop-shadow-xl max-w-full h-auto rounded-2xl border-[3px] hover:opacity-80 transition-all"
-            />
-          </div>
-        </div>
-        {/* Decorative gradient shapes */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
-          <div className="absolute w-72 h-72 bg-cyan-400 opacity-10 rounded-full blur-3xl -top-24 -left-24"></div>
-          <div className="absolute w-96 h-96 bg-pink-400 opacity-10 rounded-full blur-3xl -bottom-24 -right-24"></div>
-        </div>
-      </section>
-
-      {/* What We Offer */}
-      <section
-        className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-4"
-        id="services"
-      >
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-cyan-300">
-            What We Offer
-          </h2>
-          <WhatWeOffer />
-        </div>
-      </section>
-
-      {/* Our Work Showcase */}
-      <section
-        className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-4"
-        id="work"
-      >
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-cyan-200">
-            We Support You Across Technologies
-          </h2>
-          <OurWorks />
-        </div>
-      </section>
-
-      {/* Workflow Process */}
-      <section className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-cyan-300">
-            How We Work
-          </h2>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 relative">
-            {workflow.map((step, idx) => (
-              <div
-                key={step.title}
-                className="relative flex flex-col items-center text-center flex-1 min-w-[160px]"
-              >
-                <div className="bg-[#151a26] rounded-2xl shadow-lg border border-cyan-900 px-6 py-10 flex flex-col items-center w-full hover:shadow-cyan-400 transition">
-                  <div className="text-xs font-semibold uppercase text-cyan-400 mb-2">
-                    Step {idx + 1}
-                  </div>
-                  <div className="text-4xl mb-3">{step.icon}</div>
-                  <div className="font-bold text-cyan-200 mb-1">
-                    {step.title}
-                  </div>
-                  <div className="text-gray-400 text-sm">{step.desc}</div>
-                </div>
-                {/* Arrow */}
-                {idx < workflow.length - 1 && (
-                  <div className="hidden md:block absolute right-[-34px] top-1/2 -translate-y-1/2 z-10">
-                    {/* Arrow SVG */}
-                    <svg
-                      width="44"
-                      height="24"
-                      viewBox="0 0 44 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M2 12H40M40 12L31 3M40 12L31 21"
-                        stroke="#22d3ee"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact / Inquiry Form */}
-      <section id="contact">
-        <ContactSection />
-      </section>
-
-      {/* Testimonials */}
-      <Testimonial />
-
-      {/* Sticky Mobile CTA */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-xs px-4 block md:hidden">
-        <div className="bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full shadow-lg flex items-center justify-between px-4 py-2">
-          <span className="text-white font-semibold">
-            Let's talk about your project!
-          </span>
-          <a
-            href="#contact"
-            className="ml-4 px-4 py-2 bg-white text-cyan-700 rounded-full font-bold text-sm"
-          >
-            Contact
-          </a>
-        </div>
-      </div>
-    </main>
-  );
+export default function DigitalLabPage() {
+  return <DigitalLabClient />;
 }
