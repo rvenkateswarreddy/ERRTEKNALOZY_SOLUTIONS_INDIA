@@ -55,7 +55,7 @@ const Page = () => {
           <Navbar />
         </Suspense>
         
-        {/* Hero section is above the fold, load early */}
+        {/* Hero section is above the fo, load early */}
         <Suspense fallback={<div className="w-full text-center py-16">Loading hero...</div>}>
           <HeroVideoSection />
         </Suspense>
