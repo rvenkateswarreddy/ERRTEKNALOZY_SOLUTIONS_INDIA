@@ -86,7 +86,7 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start gap-5 md:w-1/3">
             <Link
               href="/"
-              className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#007BFF] via-[#5E5EFC] to-[#FF80FF]"
+              className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#00AEEF] cursor-pointer to-[#0052CC]"
             >
               Talent With Us
             </Link>
@@ -103,7 +103,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={soc.label}
-                  className="p-2 rounded-full bg-white/60 backdrop-blur-md border border-white/40 shadow-md hover:shadow-lg hover:bg-gradient-to-r hover:from-blue-400 hover:to-fuchsia-500 hover:text-white transition-all duration-300"
+                  className="p-2 rounded-full bg-white/60 backdrop-blur-md border border-white/40 shadow-md hover:shadow-lg hover:bg-gradient-to-r hover:from-[#00AEEF] hover:to-[#0052CC] hover:text-white transition-all duration-300"
                 >
                   {soc.icon}
                 </a>
@@ -126,7 +126,7 @@ export default function Footer() {
                         className="text-gray-600 hover:text-blue-600 relative inline-block group"
                       >
                         <span className="transition-colors">{link.label}</span>
-                        <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-gradient-to-r from-blue-500 to-fuchsia-500 transition-all duration-300 group-hover:w-full" />
+                        <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-gradient-to-r from-[#00AEEF] cursor-pointer to-[#0052CC] transition-all duration-300 group-hover:w-full" />
                       </Link>
                     </li>
                   ))}
