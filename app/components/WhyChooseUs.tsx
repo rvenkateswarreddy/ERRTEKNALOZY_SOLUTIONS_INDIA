@@ -167,10 +167,10 @@ function WhyChooseUs() {
           <span className="inline-block py-1 px-3 mb-4 text-xs font-semibold text-blue-500 bg-blue-100 rounded-full">
             PARTNER FOR GROWTH
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
             Why Leading Businesses Trust Us
           </h2>
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+          <p className="text-lg font-medium text-gray-700 max-w-3xl mx-auto">
             We help businesses across India and beyond accelerate their digital
             journey with secure, scalable, and innovative tech
             solutions—customized for your success.

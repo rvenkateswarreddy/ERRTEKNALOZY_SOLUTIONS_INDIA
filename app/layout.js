@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: {
-    default: 'Talent With Us',
+    default: 'Talent With Us | Digital Innovation Experts',
     template: '%s | Talent With Us',
   },
   description:

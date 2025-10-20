@@ -1,6 +1,5 @@
-'use client';
-
-import React from 'react';
+import { memo, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   FaReact,
   FaNodeJs,
@@ -57,71 +56,104 @@ const MarqueeRow = ({
   colorClass,
   isAlt,
 }: {
-  icons: any[];
+  icons: { icon: any; label: string }[];
   colorClass: string;
   isAlt?: boolean;
-}) => (
-  <div className="overflow-hidden relative group mb-12">
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
     <div
-      className={`flex w-[200%] ${
-        isAlt ? 'marquee2' : 'marquee'
-      } pause-on-hover space-x-12`}
+      className="overflow-hidden relative mb-12 cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {icons.concat(icons).map(({ icon: Icon, label }, idx) => (
-        <div
-          key={idx}
-          className={`text-6xl sm:text-7xl md:text-8xl ${colorClass} hover:scale-110 transition-transform duration-300 p-4`}
-          aria-label={label}
-          title={label}
-        >
-          <Icon />
-        </div>
-      ))}
+      <motion.div
+        className={`flex w-[200%] space-x-14 ${
+          isAlt ? 'flex-row-reverse' : 'flex-row'
+        }`}
+        animate={{
+          x: isHovered ? 0 : ['0%', '-50%'],
+        }}
+        transition={{
+          x: {
+            repeat: isHovered ? 0 : Infinity,
+            repeatType: 'loop',
+            duration: 40,
+            ease: 'linear',
+          },
+        }}
+      >
+        {[...icons, ...icons].map(({ icon: Icon, label }, idx) => (
+          <motion.div
+            key={idx}
+            className={`text-7xl sm:text-8xl md:text-9xl ${colorClass} transition-transform duration-300 flex flex-col items-center justify-center`}
+            whileHover={{ scale: 1.2, color: colorClass.replace('300', '600') }}
+            aria-label={label}
+            title={label}
+          >
+            <Icon />
+            <span className="mt-2 text-xl font-semibold text-gray-800 dark:text-gray-100 select-none pointer-events-none">
+              {label}
+            </span>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
-  </div>
-);
+  );
+};
 
 const TechStackShowcase = () => {
   return (
     <section
-      className="bg-gradient-to-br from-[#e6f0ff] via-[#edf4ff] to-[#f7faff] text-white py-5 px-4 sm:px-8 "
+      className="bg-gradient-to-br from-[#e6f0ff] via-[#edf4ff] to-[#f7faff] py-14 sm:py-20 px-6 sm:px-10 md:px-16 lg:px-28"
       aria-labelledby="tech-stack-heading"
     >
-      <div className="max-w-7xl mx-auto text-center mb-16">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className="max-w-7xl mx-auto text-center mb-16"
+      >
         <h2
           id="tech-stack-heading"
-          className="text-4xl sm:text-5xl font-bold my-6 text-transparent bg-clip-text bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]"
+          className="text-3xl md:text-4xl font-extrabold leading-tight bg-gradient-to-r from-[#1EB8F3] to-[#0066FF] bg-clip-text text-transparent"
         >
           Technologies We Master
         </h2>
-        <p className="text-black/70 text-lg max-w-3xl mx-auto">
-          At <span className="text-black font-semibold">Talent With Us</span>,
-          we use a cutting-edge tech stack to build scalable, secure, and
+        <p className="mt-4 max-w-xl mx-auto text-gray-700 text-lg sm:text-xl font-medium">
+          At <span className="font-bold text-gray-900">Talent With Us</span>, we
+          use a cutting-edge tech stack to build scalable, secure, and
           high-performance digital solutions. From frontend to backend, we
           ensure quality and innovation.
         </p>
-      </div>
+      </motion.div>
 
       <MarqueeRow
         icons={techIconsRowOne}
-        colorClass="text-cyan-300 hover:text-cyan-500"
+        colorClass="text-cyan-400 hover:text-cyan-600"
       />
       <MarqueeRow
         icons={techIconsRowTwo}
-        colorClass="text-orange-300 hover:text-orange-500"
+        colorClass="text-orange-400 hover:text-orange-600"
         isAlt
       />
 
       <div className="text-center mt-12 mb-10">
-        <button
-          className="bg-gradient-to-r from-[#00AEEF] to-[#0052CC] text-white px-8 py-3 rounded-xl shadow-lg font-semibold text-lg hover:opacity-90 hover:scale-105 transition-transform duration-300"
+        <motion.button
+          whileHover={{
+            scale: 1.05,
+            boxShadow: '0px 0px 15px rgba(0,174,239,0.6)',
+          }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-gradient-to-r from-[#00AEEF] cursor-pointer to-[#0052CC] text-white px-10 py-4 rounded-full shadow-lg font-semibold text-lg transition-transform duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
           aria-label="Explore our full repository"
         >
           Explore Our Full Repository
-        </button>
+        </motion.button>
       </div>
     </section>
   );
 };
 
-export default TechStackShowcase;
+export default memo(TechStackShowcase);

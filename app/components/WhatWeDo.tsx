@@ -12,7 +12,7 @@ import {
   GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 
-// Service data is static, so useMemo for performance and clarity
+// Static data memoized for performance
 const SERVICES = [
   {
     title: 'Web Development',
@@ -57,24 +57,28 @@ const SERVICES = [
 ] as const;
 
 const CARD_ANIMATION_VARIANTS = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, type: 'spring', stiffness: 90, damping: 15 },
+    transition: {
+      delay: i * 0.15,
+      type: 'spring',
+      stiffness: 100,
+      damping: 18,
+    },
   }),
 };
 
 const SECTION_ANIMATION = {
   hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
 };
 
 function WhatWeDoComponent() {
-  // Use triggerOnce:true for performance, but set to false if content changes
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true });
+  // Intersection observer with triggerOnce controls animation play once
+  const [ref, inView] = useInView({ threshold: 0.15, triggerOnce: true });
 
-  // Memoize services to avoid re-renders
   const services = useMemo(() => SERVICES, []);
 
   return (
@@ -82,24 +86,25 @@ function WhatWeDoComponent() {
       id="services"
       ref={ref}
       aria-label="Our Digital Services"
-      className="py-20 relative"
+      className="py-20 relative bg-gradient-to-b from-white to-blue-50"
     >
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 md:px-12">
         <motion.div
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
           variants={SECTION_ANIMATION}
-          className="text-center mb-16"
+          className="text-center mb-16 max-w-4xl mx-auto"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 drop-shadow-sm">
             Our Digital Services
           </h2>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Comprehensive solutions tailored to your unique business needs.
           </p>
+          <div className="mt-6 h-1 w-20 mx-auto rounded-full bg-gradient-to-r from-[#1EB8F3] to-[#0059FF]" />
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {services.map((service, idx) => {
             const Icon = service.icon;
             return (
@@ -110,14 +115,21 @@ function WhatWeDoComponent() {
                 variants={CARD_ANIMATION_VARIANTS}
                 custom={idx}
                 tabIndex={0}
-                aria-label={service.title}
-                className="bg-gray-white/70 text-center md:text-left backdrop-blur-sm rounded-xl p-6 border border-gray-400/50 hover:border-blue-500/40 focus-within:border-blue-400 transition-all hover:-translate-y-2 focus-within:-translate-y-2 shadow-lg outline-none"
+                aria-label={`${service.title} service`}
+                className="bg-white/95 shadow-lg rounded-xl p-7 border border-gray-200 hover:border-blue-500 focus-within:border-blue-500 transition-transform transform hover:-translate-y-2 focus-within:-translate-y-2 outline-none"
               >
-                <div className="text-blue-400 mb-4" aria-hidden="true">
-                  <Icon className="h-8 w-8 mx-auto md:mx-0" />
+                <div
+                  className="p-4 rounded-full ml-25 md:ml-0 bg-gradient-to-r from-[#1EB8F3] to-[#0059FF] text-white inline-flex mb-5 shadow-md"
+                  aria-hidden="true"
+                >
+                  <Icon className="h-9 w-9" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                <p className="text-gray-400">{service.description}</p>
+                <h3 className="text-xl text-center md:text-left font-semibold text-gray-900 mb-3 leading-tight">
+                  {service.title}
+                </h3>
+                <p className="text-gray-600 text-center md:text-left leading-relaxed">
+                  {service.description}
+                </p>
               </motion.article>
             );
           })}
@@ -127,5 +139,4 @@ function WhatWeDoComponent() {
   );
 }
 
-// Memoize for extra performance if used in large pages
 export default memo(WhatWeDoComponent);
