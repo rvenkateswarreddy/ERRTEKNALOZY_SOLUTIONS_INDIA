@@ -11,7 +11,7 @@ const TESTIMONIALS = [
     companyLogo:
       'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
     quote:
-      'Working with this team was transformative. Their technical depth and proactive approach made our project a true success. We saw quality and speed at a level I’d expect only from Google’s own engineers.',
+      'Working with this team was transformative. Their technical depth and proactive approach made our project a true success.',
     rating: 5,
     highlight: 'Matched Google’s engineering excellence.',
   },
@@ -31,9 +31,9 @@ const TESTIMONIALS = [
     title: 'CTO, IBM',
     avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     companyLogo:
-      'https://static.vecteezy.com/system/resources/previews/021/515/152/large_2x/ibm-brand-symbol-software-computer-logo-white-design-illustration-with-blue-background-free-vector.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg',
     quote:
-      'Their team thinks strategically, executes flawlessly, and communicates transparently. We achieved our goals faster, and with greater confidence, than with any previous partner.',
+      'Their team thinks strategically, executes flawlessly, and communicates transparently. We achieved our goals faster than ever.',
     rating: 5,
     highlight: 'Strategic, seamless partnership.',
   },
@@ -42,7 +42,6 @@ const TESTIMONIALS = [
 export default function Testimonials() {
   const [active, setActive] = useState(0);
 
-  // Auto-cycle every 8 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setActive((prev) => (prev + 1) % TESTIMONIALS.length);
@@ -51,103 +50,121 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section className="relative py-24 px-4 sm:px-8 bg-gradient-to-br from-[#e6f0ff] via-[#edf4ff] to-[#f7faff]">
-      <div className="max-w-5xl mx-auto text-center mb-14">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]">
+    <section className="relative py-28 overflow-hidden bg-gradient-to-b from-[#f6faff] to-[#eef3ff]">
+      {/* Subtle background glow */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-20 left-40 w-[400px] h-[400px] bg-cyan-300/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-10 right-40 w-[400px] h-[400px] bg-fuchsia-300/20 rounded-full blur-3xl animate-pulse delay-700" />
+      </div>
+
+      {/* Header */}
+      <div className="max-w-5xl mx-auto text-center mb-16">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#0072ff] via-[#5e5efc] to-[#ff80ff]">
           What Industry Leaders Say
         </h2>
-        <p className="text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
+        <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
           Trusted by top engineers and executives from the world’s most
           innovative companies.
         </p>
       </div>
-      <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-12">
-        {/* Avatars and selector */}
-        <div className="flex md:flex-col gap-6 md:gap-8 items-center md:items-start">
+
+      <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
+        {/* Avatars */}
+        <div className="flex md:flex-col gap-6 md:gap-10 items-center">
           {TESTIMONIALS.map((t, idx) => (
-            <button
+            <motion.button
               key={t.name}
               onClick={() => setActive(idx)}
-              aria-label={`Show testimonial from ${t.name}`}
-              className={`flex flex-col items-center transition-all duration-300 ${
-                idx === active
-                  ? 'scale-110'
-                  : 'opacity-60 grayscale hover:scale-105'
+              whileHover={{ scale: 1.1 }}
+              className={`relative transition-all duration-500 ${
+                idx === active ? 'scale-110' : 'opacity-60 grayscale'
               }`}
             >
-              <div className="relative">
+              <div
+                className={`relative rounded-full p-[3px] ${
+                  idx === active
+                    ? 'bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 shadow-lg shadow-blue-200/40'
+                    : 'bg-gray-300/40'
+                }`}
+              >
                 <img
                   src={t.avatar}
                   alt={t.name}
-                  className={`w-16 h-16 md:w-20 md:h-20 rounded-full border-4 ${
-                    idx === active
-                      ? 'border-[#1983de] shadow-xl'
-                      : 'border-gray-400'
-                  }`}
-                  loading="lazy"
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
                 />
                 <img
                   src={t.companyLogo}
                   alt={t.title}
                   className="absolute -bottom-2 -right-2 w-6 h-6 md:w-8 md:h-8 bg-white rounded-full border border-gray-200 shadow"
-                  style={{ background: '#fff' }}
                 />
               </div>
-              <span className="mt-2 text-gray-200 font-semibold text-sm text-center">
+              <span
+                className={`block mt-2 text-sm font-semibold ${
+                  idx === active ? 'text-blue-700' : 'text-gray-500'
+                }`}
+              >
                 {t.name.split(' ')[0]}
               </span>
-            </button>
+            </motion.button>
           ))}
         </div>
-        {/* Testimonial Content */}
-        <div className="flex-1 min-h-[280px]">
+
+        {/* Testimonial Card */}
+        <div className="flex-1 min-h-[300px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 40, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -40 }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
-              className="bg-[#B8E0E8]/70 rounded-2xl shadow-2xl px-8 py-10 flex flex-col justify-center items-center"
-              aria-live="polite"
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className="relative bg-white/60 backdrop-blur-2xl border border-white/40 rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] px-10 py-12 text-center"
             >
-              {/* Star Rating */}
-              <div className="flex gap-1 mb-4">
+              {/* Floating glow */}
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-blue-400/10 via-cyan-200/10 to-fuchsia-300/10 blur-2xl -z-10" />
+
+              {/* Stars */}
+              <div className="flex justify-center gap-1 mb-4">
                 {[...Array(TESTIMONIALS[active].rating)].map((_, i) => (
                   <StarIcon key={i} className="h-6 w-6 text-amber-400" />
                 ))}
               </div>
+
               {/* Highlight */}
-              <span className="text-sm px-3 py-1 rounded-full bg-gradient-to-r from-blue-700 via-fuchsia-600 to-orange-400 text-white font-bold mb-3">
+              <span className="inline-block text-xs tracking-wider uppercase font-semibold px-4 py-1 mb-4 rounded-full bg-gradient-to-r from-blue-600 to-fuchsia-500 text-white">
                 {TESTIMONIALS[active].highlight}
               </span>
-              {/* Text */}
-              <blockquote className="text-lg md:text-2xl text-gray-900 font-semibold mb-6 text-center">
+
+              {/* Quote */}
+              <blockquote className="text-lg md:text-2xl text-gray-800 font-medium italic leading-relaxed mb-6">
                 “{TESTIMONIALS[active].quote}”
               </blockquote>
-              {/* Profile */}
-              <div className="flex flex-col items-center gap-0">
-                <span className="font-bold text-[#007d9c] text-lg">
+
+              {/* Name + Title */}
+              <div>
+                <p className="font-bold text-lg text-blue-700">
                   {TESTIMONIALS[active].name}
-                </span>
-                <span className="text-gray-800 text-sm">
+                </p>
+                <p className="text-gray-600 text-sm">
                   {TESTIMONIALS[active].title}
-                </span>
+                </p>
               </div>
             </motion.div>
           </AnimatePresence>
         </div>
       </div>
-      {/* Dots navigation for mobile */}
-      <div className="flex justify-center mt-8 md:hidden">
+
+      {/* Dots (mobile) */}
+      <div className="flex justify-center mt-10 md:hidden">
         {TESTIMONIALS.map((_, i) => (
           <button
             key={i}
             className={`mx-1 w-3 h-3 rounded-full transition-all duration-300 ${
-              i === active ? 'bg-fuchsia-500' : 'bg-gray-400 opacity-60'
+              i === active
+                ? 'bg-fuchsia-500 scale-110'
+                : 'bg-gray-400 opacity-60'
             }`}
             onClick={() => setActive(i)}
-            aria-label={`Go to testimonial ${i + 1}`}
           />
         ))}
       </div>

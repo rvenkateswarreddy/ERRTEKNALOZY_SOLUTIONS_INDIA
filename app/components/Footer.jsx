@@ -72,73 +72,89 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#D6F0F8] border-t border-[#C2E0E8] text-gray-700 pt-16 pb-8 px-4">
-      <div className="max-w-7xl mx-auto flex flex-col items-center md:flex-row md:justify-between gap-12 md:gap-4">
-        {/* Brand & tagline */}
-        <div className="flex items-center md:items-start flex-col gap-4 md:w-1/4">
-          <Link
-            href="/"
-            className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#1EB8F3] to-[#0066FF]"
-          >
-            Talent With Us
-          </Link>
-          <p className="text-gray-800 text-sm leading-relaxed max-w-xs">
-            Building world-class digital solutions for ambitious teams, with a
-            focus on quality, security, and scale.
-          </p>
-          <div className="flex gap-4 mt-2">
-            {SOCIALS.map((soc) => (
-              <a
-                key={soc.label}
-                href={soc.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={soc.label}
-                className="hover:text-cyan-600 transition-colors"
-              >
-                {soc.icon}
-              </a>
+    <footer className="relative overflow-hidden bg-gradient-to-br from-[#E9F7FF] via-[#F6FBFF] to-[#E6F1FF] pt-20 pb-10">
+      {/* Animated Gradient Orbs */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-20 left-10 w-[300px] h-[300px] bg-cyan-300/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-fuchsia-300/30 rounded-full blur-3xl animate-pulse delay-700" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Top Section */}
+        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-14">
+          {/* Brand */}
+          <div className="flex flex-col items-center md:items-start gap-5 md:w-1/3">
+            <Link
+              href="/"
+              className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#007BFF] via-[#5E5EFC] to-[#FF80FF]"
+            >
+              Talent With Us
+            </Link>
+            <p className="text-gray-700 text-sm max-w-xs text-center md:text-left">
+              Empowering businesses to build world-class digital experiences
+              with scalability, security, and innovation at heart.
+            </p>
+            {/* Social Icons */}
+            <div className="flex gap-5 mt-3">
+              {SOCIALS.map((soc) => (
+                <a
+                  key={soc.label}
+                  href={soc.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={soc.label}
+                  className="p-2 rounded-full bg-white/60 backdrop-blur-md border border-white/40 shadow-md hover:shadow-lg hover:bg-gradient-to-r hover:from-blue-400 hover:to-fuchsia-500 hover:text-white transition-all duration-300"
+                >
+                  {soc.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation Columns */}
+          <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-10 text-center sm:text-left">
+            {NAV_LINKS.map((col) => (
+              <div key={col.heading}>
+                <h4 className="text-lg font-semibold text-gray-900 mb-5">
+                  {col.heading}
+                </h4>
+                <ul className="space-y-3">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="text-gray-600 hover:text-blue-600 relative inline-block group"
+                      >
+                        <span className="transition-colors">{link.label}</span>
+                        <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-gradient-to-r from-blue-500 to-fuchsia-500 transition-all duration-300 group-hover:w-full" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>
-        {/* Navigation */}
-        <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-8">
-          {NAV_LINKS.map((col) => (
-            <div key={col.heading}>
-              <h4 className="text-lg font-semibold text-black mb-4">
-                {col.heading}
-              </h4>
-              <ul className="space-y-3">
-                {col.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="hover:text-cyan-600 transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* Bottom - legal */}
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between mt-14 border-t border-[#172c3a] pt-6 gap-2 text-sm text-gray-600">
-        <div>
-          &copy; {new Date().getFullYear()} Talent With Us. All rights reserved.
-        </div>
-        <div className="flex gap-4">
-          <Link
-            href="/privacy"
-            className="hover:text-cyan-600 transition-colors"
-          >
-            Privacy Policy
-          </Link>
-          <Link href="/terms" className="hover:text-cyan-600 transition-colors">
-            Terms of Service
-          </Link>
+
+        {/* Divider */}
+        <div className="border-t border-white/40 mt-16 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
+          <p>
+            © {new Date().getFullYear()} Talent With Us. All rights reserved.
+          </p>
+          <div className="flex gap-5 mt-3 md:mt-0">
+            <Link
+              href="/privacy"
+              className="hover:text-blue-600 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-blue-600 transition-colors"
+            >
+              Terms of Service
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
