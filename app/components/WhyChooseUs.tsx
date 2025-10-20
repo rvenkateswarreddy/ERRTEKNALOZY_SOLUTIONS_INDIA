@@ -191,7 +191,7 @@ function WhyChooseUs() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="bg-white text-center md:text-left rounded-xl shadow-lg p-6 border border-gray-100"
               >
-                <p className="text-3xl font-bold text-gray-900 mb-2">
+                <p className="text-3xl font-bold bg-gradient-to-r from-[#00AEEF] to-[#0052CC] bg-clip-text text-transparent mb-2">
                   <AnimatedNumber
                     value={stat.value}
                     display={stat.display}

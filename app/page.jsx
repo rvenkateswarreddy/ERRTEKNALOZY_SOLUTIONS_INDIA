@@ -21,8 +21,9 @@ const ImportantUpdates = dynamic(
 );
 const Testimonial = dynamic(() => import('./components/Testimonial'), {
   loading: () => (
-    <div className="text-gray-400 w-full text-center py-8">
-      Loading testimonials…
+    <div className="w-full flex flex-col items-center justify-center py-16 text-gray-400 space-y-4">
+      {/* Spinner */}
+      <div className="w-10 h-10 border-4 border-[#00AEEF]/30 border-t-[#00AEEF] rounded-full animate-spin"></div>
     </div>
   ),
   ssr: false,

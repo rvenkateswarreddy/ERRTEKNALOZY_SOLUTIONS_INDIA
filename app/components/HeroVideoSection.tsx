@@ -171,7 +171,7 @@ export default function HeroVideoSection() {
           className="flex flex-col sm:flex-row gap-4"
         >
           <motion.a
-            href="/contact"
+            href="/contactUs"
             whileHover={{ scale: 1.07, boxShadow: '0 0 32px #1EB8F3' }}
             whileTap={{ scale: 0.98 }}
             className={`px-8 py-3 rounded-full text-center text-lg font-semibold shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 ${buttonPrimary} transition-colors`}
