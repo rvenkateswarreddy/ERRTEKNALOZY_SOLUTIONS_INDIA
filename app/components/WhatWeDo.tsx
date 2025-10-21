@@ -119,7 +119,7 @@ function WhatWeDoComponent() {
                 className="bg-white/95 shadow-lg rounded-xl p-7 border border-gray-200 hover:border-blue-500 focus-within:border-blue-500 transition-transform transform hover:-translate-y-2 focus-within:-translate-y-2 outline-none"
               >
                 <div
-                  className="p-4 rounded-full ml-25 md:ml-0 bg-gradient-to-r from-[#1EB8F3] to-[#0059FF] text-white inline-flex mb-5 shadow-md"
+                  className="p-4 rounded-full ml-18 md:ml-0 bg-gradient-to-r from-[#1EB8F3] to-[#0059FF] text-white inline-flex mb-5 shadow-md"
                   aria-hidden="true"
                 >
                   <Icon className="h-9 w-9" />
