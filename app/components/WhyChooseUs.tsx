@@ -11,8 +11,9 @@ import {
   Users,
   Code,
   Cloud,
+  ArrowRight, // Added icon for the CTA
 } from 'lucide-react';
-import { useInView } from 'react-intersection-observer'; // ✅ Correct import!
+import { useInView } from 'react-intersection-observer';
 import { Card, CardContent, CardHeader, CardTitle } from './card';
 
 const features = [
@@ -92,6 +93,7 @@ function AnimatedNumber({
   decimals = 0,
   suffix = '',
   inView,
+  isStatic,
 }: {
   value: number;
   display?: string;
@@ -99,21 +101,31 @@ function AnimatedNumber({
   decimals?: number;
   suffix?: string;
   inView: boolean;
+  isStatic?: boolean;
 }) {
+  // --- All Hooks are called at the top ---
   const [currentValue, setCurrentValue] = useState(0);
 
   useEffect(() => {
+    // --- Conditions are INSIDE the hook ---
     if (!inView) {
       setCurrentValue(0);
       return;
     }
-    if (display && !/^\d+(\.\d+)?$/.test(display.replace(/[+%/]/g, ''))) {
-      return; // for "24/7" or "500+"
+
+    if (isStatic) {
+      return;
     }
+
+    if (display && !/^\d+(\.\d+)?$/.test(display.replace(/[+%/]/g, ''))) {
+      return;
+    }
+
     let frame: number;
     const start = 0;
     const end = value;
     const startTime = performance.now();
+
     function animate(now: number) {
       const elapsed = (now - startTime) / 1000;
       if (elapsed < duration) {
@@ -132,12 +144,13 @@ function AnimatedNumber({
     }
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [inView, value, duration, decimals, display]);
+  }, [inView, value, duration, decimals, display, isStatic]);
 
-  if (display && !/^\d+(\.\d+)?$/.test(display.replace(/[+%/]/g, ''))) {
-    // For 24/7 or 500+ etc., just show as text
+  // --- Conditional return is AFTER all hooks ---
+  if (isStatic) {
     return <span>{display}</span>;
   }
+
   return (
     <span>
       {decimals > 0 ? currentValue.toFixed(decimals) : Math.round(currentValue)}
@@ -199,6 +212,7 @@ function WhyChooseUs() {
                     decimals={stat.decimals}
                     suffix={stat.suffix}
                     inView={inView}
+                    isStatic={stat.isStatic}
                   />
                 </p>
                 <p className="text-gray-500 dark:text-gray-500">{stat.label}</p>
@@ -228,39 +242,32 @@ function WhyChooseUs() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-500">{feature.description}</p>
-                  </CardContent>
+                  </CardContent>{' '}
+                  {/* <-- FIX: Corrected closing tag */}
                 </Card>
               </motion.div>
             ))}
         </div>
 
-        <motion.div
+        {/* --- FIX: Changed to flexbox for robust centering --- */}
+        <motion.a
+          href="/contactUs"
+          role="button"
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ delay: 1.2 }}
-          className="mt-20 text-center"
+          className="mt-20 flex flex-col items-center group" // <-- Use flexbox
         >
-          <div className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-[#00AEEF] to-[#0052CC] rounded-full shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+          <div className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-[#00AEEF] to-[#0052CC] rounded-full shadow-lg group-hover:shadow-xl transition-shadow cursor-pointer">
             Request Consultation
-            <svg
-              className="ml-2 w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              ></path>
-            </svg>
+            <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
           </div>
           <p className="mt-4 text-sm text-gray-500 ">
             Our consultants are available 24/7 to help you plan your next big
             move.
           </p>
-        </motion.div>
+        </motion.a>
+        {/* --- End of Fix --- */}
       </div>
     </section>
   );
