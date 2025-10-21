@@ -1,32 +1,94 @@
 'use client';
-import React, { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Check, X } from 'lucide-react'; // <-- For consistent icons
+import PropTypes from 'prop-types'; // <-- FIX: Import PropTypes for JS type checking
+import { useEffect, useState } from 'react';
 import {
-  FaReact,
-  FaNodeJs,
-  FaPython,
-  FaJava,
+  FaAndroid,
+  FaAngular,
+  FaApple,
   FaAws,
   FaDatabase,
-  FaAndroid,
-  FaApple,
-  FaAngular,
-  FaPhp,
   FaHtml5,
-  FaCss3Alt,
+  FaJava,
+  FaNodeJs,
+  FaPhp,
+  FaPython,
+  FaReact,
 } from 'react-icons/fa';
 import {
-  SiNextdotjs,
-  SiMongodb,
-  SiTailwindcss,
-  SiFirebase,
   SiDjango,
-  SiFlutter,
-  SiLaravel,
-  SiMysql,
-  SiKubernetes,
   SiDocker,
+  SiFirebase,
+  SiFlutter,
+  SiKubernetes,
+  SiLaravel,
+  SiMongodb,
+  SiMysql,
+  SiNextdotjs,
+  SiTailwindcss,
 } from 'react-icons/si';
 
+// --- Reusable Modal Component (for consistency) ---
+const Modal = ({ isOpen, onClose, children }) => {
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleEsc);
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [isOpen, onClose]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          aria-modal="true"
+          role="dialog"
+        >
+          <motion.div
+            className="bg-gradient-to-br from-[#181b29] via-[#0a0a0a] to-[#191c24] border border-cyan-700/50 rounded-2xl shadow-2xl p-8 max-w-lg w-full relative"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-4 right-4 text-cyan-300 hover:text-cyan-200 transition p-1 rounded-full hover:bg-white/10"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <X size={24} />
+            </button>
+            {children}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+Modal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node,
+};
+
+// --- Data (Moved outside component) ---
 const techSupports = [
   {
     icon: <FaReact className="text-cyan-400 text-4xl" />,
@@ -282,103 +344,128 @@ const techSupports = [
   },
 ];
 
+// --- Animation Variants ---
+const gridVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.05, ease: 'easeOut' },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: 'easeOut' },
+  },
+};
+
 export default function OurWorks() {
-  const [modal, setModal] = useState(null);
+  const [modalIdx, setModalIdx] = useState(null); // Use index for modal state
+  const selectedTech = modalIdx !== null ? techSupports[modalIdx] : null;
 
   return (
     <div>
-      <div className="text-center mx-auto max-w-2xl mb-10">
-        <p className="text-gray-300 text-base">
+      <div className="text-center mx-auto max-w-3xl mb-12">
+        {' '}
+        {/* Increased max-width */}
+        <p className="text-gray-700 text-base md:text-lg">
+          {' '}
+          {/* Adjusted text size */}
           Our team provides end-to-end support, project delivery,
           troubleshooting, and optimization on a wide range of leading
           technologies and platforms. Whether you need full-stack development,
           mobile apps, cloud, or DevOps—we've got your stack covered.
         </p>
       </div>
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-8">
+      <motion.div
+        className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" // Adjusted grid for better spacing
+        variants={gridVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
         {techSupports.map((tech, idx) => (
-          <div
+          <motion.button
             key={tech.name}
-            className="flex flex-col items-center bg-gradient-to-br from-[#161b22] via-[#10121a] to-[#23272f] border border-cyan-900 rounded-2xl shadow-lg p-6 hover:scale-105 transition min-h-[260px] cursor-pointer text-center"
-            onClick={() => setModal(idx)}
+            className="flex flex-col items-center bg-gradient-to-br from-[#161b22] via-[#10121a] to-[#23272f] border border-cyan-900/50 rounded-2xl shadow-lg p-6 min-h-[260px] cursor-pointer text-center focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-[#10121a]" // Accessibility
+            onClick={() => setModalIdx(idx)}
+            variants={cardVariants}
+            whileHover={{
+              y: -5,
+              scale: 1.03,
+              boxShadow: '0 10px 20px rgba(0, 255, 255, 0.1)',
+            }}
+            whileTap={{ scale: 0.98 }}
+            aria-label={`Learn more about ${tech.name}`}
           >
-            <div className="mb-3">{tech.icon}</div>
-            <div className="text-lg font-semibold text-cyan-300 mb-1">
+            <div className="mb-4">{tech.icon}</div> {/* Increased margin */}
+            <div className="text-lg font-semibold text-cyan-300 mb-2">
+              {' '}
+              {/* Increased margin */}
               {tech.name}
             </div>
-            <div className="text-cyan-200 text-sm mb-2">{tech.short}</div>
-            <div className="text-gray-400 text-xs">
-              {tech.desc.slice(0, 60)}...
+            <div className="text-cyan-200/80 text-sm mb-3 font-medium">
+              {' '}
+              {/* Increased margin */}
+              {tech.short}
             </div>
-            <button
-              className="mt-5 cursor-pointer py-2 px-5 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg transition"
-              onClick={(e) => {
-                e.stopPropagation();
-                setModal(idx);
-              }}
+            {/* Use line-clamp for cleaner truncation */}
+            <div className="text-gray-400 text-xs line-clamp-2 flex-grow">
+              {tech.desc}
+            </div>
+            {/* Visual cue instead of a nested button */}
+            <div
+              className="mt-5 text-sm font-semibold text-cyan-500 group-hover:text-cyan-300 transition-colors"
+              aria-hidden="true"
             >
-              Learn More
-            </button>
-          </div>
+              Learn More &rarr;
+            </div>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
 
-      {/* Modal */}
-      {modal !== null && (
-        <div className="fixed inset-0 z-40 bg-black/80 flex items-center justify-center px-3">
-          <div className="bg-gradient-to-br from-[#181b29] via-[#0a0a0a] to-[#191c24] border-2 border-cyan-700 rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-fade-in">
-            <button
-              className="absolute top-4 right-5 text-2xl text-cyan-300 cursor-pointer hover:text-cyan-200 transition"
-              onClick={() => setModal(null)}
-              aria-label="Close"
-            >
-              &times;
-            </button>
+      {/* Reusable Modal */}
+      <Modal isOpen={selectedTech !== null} onClose={() => setModalIdx(null)}>
+        {selectedTech && (
+          <div>
             <div className="flex items-center gap-4 mb-4">
-              <span>{techSupports[modal].icon}</span>
-              <span className="text-xl font-bold text-cyan-300">
-                {techSupports[modal].name}
-              </span>
+              <span>{selectedTech.icon}</span>
+              <h3 className="text-2xl font-bold text-cyan-300">
+                {selectedTech.name}
+              </h3>
             </div>
-            <div className="mb-2 text-cyan-200 text-base font-semibold">
-              {techSupports[modal].short}
-            </div>
-            <div className="mb-5 text-gray-300">{techSupports[modal].desc}</div>
-            <div className="mb-5">
-              <div className="font-semibold text-cyan-400 mb-2">
+            <p className="mb-4 text-cyan-200/90 text-base font-semibold">
+              {selectedTech.short}
+            </p>
+            <p className="mb-6 text-gray-300 text-sm leading-relaxed">
+              {selectedTech.desc}
+            </p>
+            <div>
+              <h4 className="font-semibold text-cyan-400 mb-3 border-b border-cyan-800 pb-2">
                 Key Areas We Support:
-              </div>
-              <ul className="list-disc pl-6 text-gray-300 text-sm space-y-1">
-                {techSupports[modal].highlights.map((item, i) => (
-                  <li key={i}>{item}</li>
+              </h4>
+              <ul className="text-gray-300 text-sm space-y-2">
+                {selectedTech.highlights.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
                 ))}
               </ul>
             </div>
             <a
               href="#contact"
-              onClick={() => setModal(null)}
-              className="block w-full text-center py-3 rounded-lg font-semibold bg-cyan-600 hover:bg-cyan-700 transition text-white shadow text-lg"
+              onClick={() => setModalIdx(null)}
+              className="block w-full text-center py-3 mt-8 rounded-lg font-semibold bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 transition text-white shadow-lg text-base"
             >
-              Book a Demo
+              Book a Consultation
             </a>
           </div>
-          <style jsx>{`
-            .animate-fade-in {
-              animation: fadeIn 0.18s;
-            }
-            @keyframes fadeIn {
-              from {
-                opacity: 0;
-                transform: translateY(10px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
-          `}</style>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

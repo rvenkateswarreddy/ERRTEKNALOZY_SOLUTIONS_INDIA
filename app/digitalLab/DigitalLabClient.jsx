@@ -1,26 +1,33 @@
 'use client';
-import React from 'react';
-import OurWorks from '../components/OurWorks';
-import WhatWeOffer from '../components/WhatWeOffer';
-import Testimonial from '../components/Testimonial';
-import hero from '../../public/assets/projects.jpg';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link'; // Import Link for navigation if needed within this page
 import {
-  FaReact,
   FaNodeJs,
   FaPython,
-  FaWordpress,
+  FaReact,
   FaSearch,
+  FaWordpress,
 } from 'react-icons/fa';
 import {
+  SiFirebase,
+  SiMongodb,
   SiNextdotjs,
   SiTailwindcss,
-  SiMongodb,
-  SiFirebase,
 } from 'react-icons/si';
-import ContactSection from '../components/ContactSection';
+
+// Import child components (ensure paths are correct)
+import OurWorks from '../components/OurWorks';
+import Testimonial from '../components/Testimonial';
+import WhatWeOffer from '../components/WhatWeOffer';
+// Removed ContactSection import, will embed structure below
+// import ContactSection from '../components/ContactSection';
+
+// Import the hero image
+import hero from '../../public/assets/projects.jpg'; // Adjust path if needed
 
 const workflow = [
+  // ... (workflow data remains the same)
   {
     icon: '📝',
     title: 'Requirement Gathering',
@@ -49,120 +56,189 @@ const workflow = [
 ];
 
 const techStack = [
-  { icon: <FaReact className="text-cyan-400" />, name: 'React' },
-  { icon: <SiNextdotjs className="text-gray-50" />, name: 'Next.js' },
-  { icon: <FaNodeJs className="text-green-500" />, name: 'Node.js' },
-  { icon: <SiTailwindcss className="text-cyan-300" />, name: 'Tailwind CSS' },
-  { icon: <SiMongodb className="text-green-400" />, name: 'MongoDB' },
-  { icon: <SiFirebase className="text-yellow-400" />, name: 'Firebase' },
-  { icon: <FaPython className="text-yellow-300" />, name: 'Python' },
-  { icon: <FaWordpress className="text-blue-400" />, name: 'WordPress' },
-  { icon: <FaSearch className="text-pink-400" />, name: 'SEO Tools' },
+  // ... (techStack data remains the same)
+  { icon: FaReact, name: 'React', color: '#61DAFB' },
+  { icon: SiNextdotjs, name: 'Next.js', color: '#000000' },
+  { icon: FaNodeJs, name: 'Node.js', color: '#339933' },
+  { icon: SiTailwindcss, name: 'Tailwind CSS', color: '#06B6D4' },
+  { icon: SiMongodb, name: 'MongoDB', color: '#47A248' },
+  { icon: SiFirebase, name: 'Firebase', color: '#FFCA28' },
+  { icon: FaPython, name: 'Python', color: '#3776AB' },
+  { icon: FaWordpress, name: 'WordPress', color: '#21759B' },
+  { icon: FaSearch, name: 'SEO Tools', color: '#E10098' },
 ];
+
+// --- Animation Variants ---
+const sectionVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: 'easeOut', staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+};
 
 export default function DigitalLabClient() {
   return (
-    <main className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] min-h-screen">
+    <main className="bg-gradient-to-br from-[#E3F1F5] via-[#f0f5f8] to-[#ddeaf0] min-h-screen text-gray-800">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#0a183d] via-[#202e4d] to-[#191c24] text-white py-20 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10 z-10 relative">
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-5 leading-tight">
-              Welcome to the <span className="text-cyan-300">Digital Lab</span>
+      <section className="relative overflow-hidden py-24 px-4">
+        {/* Aurora Background */}
+        <div
+          className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
+          aria-hidden="true"
+        >
+          <div
+            className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#67e8f9] to-[#22d3ee] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+            }}
+          />
+        </div>
+
+        <motion.div
+          className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10 z-10 relative"
+          initial="hidden"
+          animate="visible"
+          variants={sectionVariants}
+        >
+          <motion.div
+            variants={itemVariants}
+            className="flex-1 text-center md:text-left"
+          >
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 leading-tight text-gray-900">
+              Welcome to the <span className="text-cyan-600">Digital Lab</span>
               <br />
-              Where <span className="text-blue-300">Ideas</span> Meet{' '}
-              <span className="text-indigo-200">Innovation</span>
+              Where <span className="text-blue-600">Ideas</span> Meet{' '}
+              <span className="text-indigo-600">Innovation</span>
             </h1>
-            <p className="text-lg mb-8 text-cyan-100">
+            <p className="text-lg md:text-xl mb-8 text-gray-700 max-w-2xl mx-auto md:mx-0">
               Explore our digital solutions crafted for impact — from powerful
               web apps to SEO-optimized websites.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <a
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+            >
+              <motion.a
                 href="#contact"
-                className="px-6 py-3 rounded-full bg-cyan-500 text-white font-semibold shadow hover:bg-cyan-600 transition"
+                className="px-7 py-3 rounded-full bg-cyan-600 text-white font-semibold shadow-md hover:bg-cyan-700 transition focus:outline-none focus:ring-2 ring-offset-2 ring-cyan-400"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 Start Your Project
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="#work"
-                className="px-6 py-3 rounded-full border border-cyan-300 text-cyan-200 font-semibold hover:bg-cyan-800 transition"
+                className="px-7 py-3 rounded-full border-2 border-cyan-600 text-cyan-700 font-semibold hover:bg-cyan-600 hover:text-white transition focus:outline-none focus:ring-2 ring-offset-2 ring-cyan-400"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 See Our Work
-              </a>
-            </div>
-          </div>
-          <div className="flex-1 flex justify-center">
+              </motion.a>
+            </motion.div>
+          </motion.div>
+          <motion.div
+            variants={itemVariants}
+            className="flex-1 flex justify-center mt-10 md:mt-0"
+          >
             <Image
               src={hero}
-              alt="Digital Solutions"
+              alt="Digital Solutions Showcase"
               width={520}
-              className="drop-shadow-xl max-w-full h-auto rounded-2xl border-[3px] hover:opacity-80 transition-all"
+              height={380}
+              priority
+              className="drop-shadow-xl max-w-full h-auto rounded-2xl border-2 border-white/50 shadow-lg"
             />
-          </div>
-        </div>
-
-        {/* Decorative gradient shapes */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
-          <div className="absolute w-72 h-72 bg-cyan-400 opacity-10 rounded-full blur-3xl -top-24 -left-24"></div>
-          <div className="absolute w-96 h-96 bg-pink-400 opacity-10 rounded-full blur-3xl -bottom-24 -right-24"></div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* What We Offer */}
-      <section
-        className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-4"
+      <motion.section
+        className="py-16 px-4"
         id="services"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
       >
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-cyan-300">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-cyan-700">
             What We Offer
           </h2>
           <WhatWeOffer />
         </div>
-      </section>
+      </motion.section>
 
       {/* Our Work Showcase */}
-      <section
-        className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-4"
+      <motion.section
+        className="py-16 px-4 bg-gradient-to-b from-[#f0f5f8] to-[#ddeaf0]/80"
         id="work"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
       >
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-cyan-200">
-            We Support You Across Technologies
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+            Featured Projects & Capabilities
           </h2>
           <OurWorks />
         </div>
-      </section>
+      </motion.section>
 
       {/* Workflow Process */}
-      <section className="bg-gradient-to-br from-[#0a183d] via-[#0a0a0a] to-[#1a1a1a] py-16 px-4">
+      <motion.section
+        className="py-20 px-4"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-center mb-12 text-cyan-300 tracking-wide">
-            How We Work
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-16 text-cyan-700 tracking-wide">
+            Our Development Workflow
           </h2>
-          <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-6 relative">
+          <motion.div
+            className="flex flex-wrap md:flex-nowrap items-stretch justify-center gap-6 relative"
+            variants={sectionVariants}
+          >
             {workflow.map((step, idx) => (
-              <div
+              <motion.div
                 key={step.title}
-                className="relative flex flex-col items-center text-center flex-1 min-w-[140px] sm:min-w-[180px] max-w-xs"
+                className="relative flex flex-col items-center text-center flex-1 min-w-[160px] sm:min-w-[200px] max-w-xs"
+                variants={itemVariants}
               >
-                <div className="bg-[#151a26] rounded-3xl shadow-lg border border-cyan-900 px-6 py-10 flex flex-col items-center w-full hover:shadow-cyan-400 transition-shadow duration-300">
-                  <div className="text-xs font-semibold uppercase text-cyan-400 mb-2">
+                <motion.div
+                  className="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg border border-cyan-200 px-6 py-10 flex flex-col items-center w-full h-full transition-shadow duration-300 hover:shadow-cyan-300/50"
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="text-xs font-semibold uppercase text-cyan-600 mb-2">
                     Step {idx + 1}
                   </div>
-                  <div className="text-5xl sm:text-6xl mb-3 text-cyan-400">
+                  <div className="text-5xl sm:text-6xl mb-4 text-cyan-500">
                     {step.icon}
                   </div>
-                  <div className="font-bold text-cyan-200 mb-1 text-lg sm:text-xl">
+                  <div className="font-bold text-gray-800 mb-2 text-lg sm:text-xl">
                     {step.title}
                   </div>
-                  <div className="text-gray-400 text-sm sm:text-base">
+                  <div className="text-gray-600 text-sm sm:text-base flex-grow">
                     {step.desc}
                   </div>
-                </div>
+                </motion.div>
                 {idx < workflow.length - 1 && (
-                  <div className="hidden md:block absolute right-[-34px] top-1/2 -translate-y-1/2 z-10">
+                  <div className="hidden md:block absolute right-[-24px] lg:right-[-34px] top-1/2 -translate-y-1/2 z-10 text-cyan-400 opacity-70">
                     <svg
                       width="44"
                       height="24"
@@ -172,7 +248,7 @@ export default function DigitalLabClient() {
                     >
                       <path
                         d="M2 12H40M40 12L31 3M40 12L31 21"
-                        stroke="#22d3ee"
+                        stroke="currentColor"
                         strokeWidth="2.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -180,34 +256,151 @@ export default function DigitalLabClient() {
                     </svg>
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* Contact / Inquiry Form */}
-      <section id="contact">
-        <ContactSection />
-      </section>
+      {/* Tech Stack Section */}
+      <motion.section
+        className="py-20 px-4 bg-gradient-to-b from-[#ddeaf0]/80 to-[#E3F1F5]"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-gray-800">
+            Technologies We Use
+          </h2>
+          <motion.div
+            className="flex flex-wrap justify-center items-center gap-x-8 gap-y-10"
+            variants={sectionVariants}
+          >
+            {techStack.map((tech) => (
+              <motion.div
+                key={tech.name}
+                className="flex flex-col items-center group w-20" // Added fixed width
+                variants={itemVariants}
+                whileHover={{ scale: 1.1 }}
+                title={tech.name} // Added title for hover tooltip
+              >
+                {/* Recreate the icon with the color */}
+                <tech.icon
+                  className="text-5xl sm:text-6xl mb-2 transition-transform duration-300 group-hover:scale-110"
+                  style={{ color: tech.color }}
+                />
+                <span className="text-xs font-medium text-gray-600 transition-opacity duration-300 opacity-80 group-hover:opacity-100">
+                  {tech.name}
+                </span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.section>
 
       {/* Testimonials */}
-      <Testimonial />
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <Testimonial />
+      </motion.section>
+
+      {/* Replace this with your actual Contact Section JSX */}
+      <motion.section
+        id="contact"
+        className="py-20 px-4 bg-gradient-to-b from-[#E3F1F5] to-[#f0f5f8]"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <div className="max-w-3xl mx-auto text-center bg-white/50 backdrop-blur-lg p-10 rounded-2xl shadow-lg border border-gray-200">
+          <h2 className="text-3xl font-bold mb-6 text-cyan-700">
+            Get In Touch
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Have a project in mind or just want to learn more? Reach out to us!
+          </p>
+          {/* Placeholder for your actual contact form or details */}
+          <form className="space-y-4">
+            <div>
+              <label htmlFor="name" className="sr-only">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                placeholder="Your Name"
+                required
+                className="w-full p-3 rounded border border-gray-300 focus:ring-2 focus:ring-cyan-400 outline-none"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Your Email"
+                required
+                className="w-full p-3 rounded border border-gray-300 focus:ring-2 focus:ring-cyan-400 outline-none"
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="sr-only">
+                Message
+              </label>
+              <textarea
+                id="message"
+                rows="4"
+                placeholder="Your Message"
+                required
+                className="w-full p-3 rounded border border-gray-300 focus:ring-2 focus:ring-cyan-400 outline-none resize-none"
+              ></textarea>
+            </div>
+            <motion.button
+              type="submit"
+              className="px-8 py-3 rounded-full bg-cyan-600 text-white font-semibold shadow-md hover:bg-cyan-700 transition focus:outline-none focus:ring-2 ring-offset-2 ring-cyan-400"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Send Message
+            </motion.button>
+          </form>
+          {/* You can add direct contact info here too */}
+          {/* <div className="mt-8 text-gray-600">
+             <p>Email: info@example.com</p>
+             <p>Phone: +123 456 7890</p>
+           </div> */}
+        </div>
+      </motion.section>
+      {/* --- END OF REVERTED CONTACT SECTION --- */}
 
       {/* Sticky Mobile CTA */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-xs px-4 block md:hidden">
-        <div className="bg-gradient-to-r from-cyan-600 to-blue-800 rounded-full shadow-lg flex items-center justify-between px-4 py-2">
-          <span className="text-white font-semibold">
-            Let's talk about your project!
+      <motion.div
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-sm px-2 block md:hidden"
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 1 }}
+      >
+        <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-full shadow-lg flex items-center justify-between px-3 py-2">
+          <span className="text-white font-medium text-sm pl-2">
+            Ready to build?
           </span>
-          <a
+          <Link
             href="#contact"
-            className="ml-4 px-4 py-2 bg-white text-cyan-700 rounded-full font-bold text-sm"
+            className="px-4 py-1.5 bg-white text-cyan-700 rounded-full font-bold text-sm shadow-sm hover:bg-gray-100 transition"
           >
-            Contact
-          </a>
+            Get Started
+          </Link>
         </div>
-      </div>
+      </motion.div>
     </main>
   );
 }
