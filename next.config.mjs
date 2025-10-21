@@ -7,6 +7,18 @@ const nextConfig = {
         hostname: 'firebasestorage.googleapis.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
+        port: '',
+        pathname: '/api/portraits/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+        port: '',
+        pathname: '/wikipedia/commons/**',
+      },
     ],
   },
 };

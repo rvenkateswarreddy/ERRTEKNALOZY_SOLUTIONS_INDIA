@@ -1,7 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StarIcon } from '@heroicons/react/24/solid';
+import Image from 'next/image'; // <-- FIX: Import next/image
 
 const TESTIMONIALS = [
   {
@@ -39,15 +40,21 @@ const TESTIMONIALS = [
   },
 ];
 
+const AUTO_ADVANCE_INTERVAL = 8000;
+
 export default function Testimonials() {
   const [active, setActive] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
+    if (isHovered) {
+      return;
+    }
     const timer = setInterval(() => {
       setActive((prev) => (prev + 1) % TESTIMONIALS.length);
-    }, 8000);
+    }, AUTO_ADVANCE_INTERVAL);
     return () => clearInterval(timer);
-  }, []);
+  }, [active, isHovered]);
 
   return (
     <section className="relative py-28 overflow-hidden bg-gradient-to-b from-[#f6faff] to-[#eef3ff]">
@@ -58,7 +65,13 @@ export default function Testimonials() {
       </div>
 
       {/* Header */}
-      <div className="max-w-5xl mx-auto text-center mb-16">
+      <motion.div
+        className="max-w-5xl mx-auto text-center mb-16"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
         <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#0072ff] via-[#5e5efc] to-[#ff80ff]">
           What Industry Leaders Say
         </h2>
@@ -66,9 +79,9 @@ export default function Testimonials() {
           Trusted by top engineers and executives from the world’s most
           innovative companies.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
+      <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12 px-4">
         {/* Avatars */}
         <div className="flex md:flex-col gap-6 md:gap-10 items-center">
           {TESTIMONIALS.map((t, idx) => (
@@ -79,6 +92,7 @@ export default function Testimonials() {
               className={`relative transition-all duration-500 ${
                 idx === active ? 'scale-110' : 'opacity-60 grayscale'
               }`}
+              aria-label={`View testimonial from ${t.name}`}
             >
               <div
                 className={`relative rounded-full p-[3px] ${
@@ -87,15 +101,21 @@ export default function Testimonials() {
                     : 'bg-gray-300/40'
                 }`}
               >
-                <img
+                {/* --- FIX: Replaced <img> with next/image --- */}
+                <Image
                   src={t.avatar}
                   alt={t.name}
+                  width={80}
+                  height={80}
                   className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
                 />
-                <img
+                {/* --- FIX: Replaced <img> with next/image --- */}
+                <Image
                   src={t.companyLogo}
-                  alt={t.title}
-                  className="absolute -bottom-2 -right-2 w-6 h-6 md:w-8 md:h-8 bg-white rounded-full border border-gray-200 shadow"
+                  alt={`${t.title} company logo`}
+                  width={32}
+                  height={32}
+                  className="absolute -bottom-2 -right-2 w-6 h-6 md:w-8 md:h-8 bg-white rounded-full border border-gray-200 shadow object-contain p-1"
                 />
               </div>
               <span
@@ -110,14 +130,20 @@ export default function Testimonials() {
         </div>
 
         {/* Testimonial Card */}
-        <div className="flex-1 min-h-[300px]">
+        <div
+          className="flex-1 min-h-[320px] w-full"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
-              initial={{ opacity: 0, y: 40, scale: 0.98 }}
+              role="region"
+              aria-labelledby={`testimonial-highlight-${active}`}
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -40 }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
+              exit={{ opacity: 0, y: -20, scale: 0.98 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
               className="relative bg-white/60 backdrop-blur-2xl border border-white/40 rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] px-10 py-12 text-center"
             >
               {/* Floating glow */}
@@ -131,7 +157,10 @@ export default function Testimonials() {
               </div>
 
               {/* Highlight */}
-              <span className="inline-block text-xs tracking-wider uppercase font-semibold px-4 py-1 mb-4 rounded-full bg-gradient-to-r from-blue-600 to-fuchsia-500 text-white">
+              <span
+                id={`testimonial-highlight-${active}`}
+                className="inline-block text-xs tracking-wider uppercase font-semibold px-4 py-1 mb-4 rounded-full bg-gradient-to-r from-blue-600 to-fuchsia-500 text-white"
+              >
                 {TESTIMONIALS[active].highlight}
               </span>
 
@@ -165,6 +194,7 @@ export default function Testimonials() {
                 : 'bg-gray-400 opacity-60'
             }`}
             onClick={() => setActive(i)}
+            aria-label={`View testimonial ${i + 1}`}
           />
         ))}
       </div>
