@@ -19,6 +19,11 @@ const nextConfig = {
         port: '',
         pathname: '/wikipedia/commons/**',
       },
+      {
+        hostname: 'cdn-icons-png.flaticon.com',
+        port: '',
+        pathname: '/128/**',
+      },
     ],
   },
 };
