@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 import Image from 'next/image';
 
+// --- DATA & CONSTANTS ---
+
 const FEATURES = [
   {
     title: 'Web Development',
@@ -30,41 +32,32 @@ const FEATURES = [
 
 const AUTO_ADVANCE_INTERVAL = 4000;
 
+// --- COMPONENT ---
+
 export default function HeroVideoSection() {
   const [index, setIndex] = useState(0);
 
-  // Memoized theme colors and classes for performance -- blue-only gradients
-  const {
-    textColor,
-    subTextColor,
-    buttonPrimary,
-    buttonSecondary,
-    cardBg,
-    dotActive,
-    dotInactive,
-    headlineGradient,
-    sectionBg,
-    shadowStrong,
-  } = useMemo(
+  // Memoized theme colors and classes
+  const theme = useMemo(
     () => ({
       textColor: 'text-gray-900',
       subTextColor: 'text-gray-700',
       buttonPrimary: 'bg-gradient-to-r from-[#1EB8F3] to-[#0059FF] text-white',
       buttonSecondary:
-        'bg-gray-900 text-white border-2 border-gray-800 hover:border-blue-400 transition-colors',
-      cardBg: 'bg-white/90 backdrop-blur',
-      dotActive: 'bg-blue-600 shadow-lg shadow-blue-300/40 scale-110',
-      dotInactive: 'bg-gray-400 opacity-90',
+        'bg-gray-900 text-white border-2 border-gray-800 hover:border-blue-400',
+      cardBg: 'bg-white',
+      activeTabBg: 'bg-white',
+      inactiveTabBg: 'bg-white/50 backdrop-blur-sm',
       headlineGradient:
         'bg-clip-text text-transparent bg-gradient-to-r from-[#1EB8F3] to-[#0059FF]',
-      sectionBg:
-        'bg-gradient-to-br from-gray-50 via-white to-blue-50 transition-colors duration-700',
-      shadowStrong: 'shadow-2xl shadow-blue-200/30',
+      sectionBg: 'bg-gradient-to-br from-gray-50 via-white to-blue-50',
+      shadowStrong: 'shadow-2xl shadow-blue-500/20',
+      shadowMedium: 'shadow-lg shadow-blue-500/10',
     }),
     []
   );
 
-  // Auto-advance logic robust against unmount/mount
+  // Auto-advance logic
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % FEATURES.length);
@@ -72,10 +65,12 @@ export default function HeroVideoSection() {
     return () => clearInterval(interval);
   }, []);
 
-  // Keyboard accessibility for carousel dots
-  const handleDotKeyDown = useCallback(
+  // Keyboard accessibility for tabs
+  const handleTabKeyDown = useCallback(
     (i: number, e: React.KeyboardEvent<HTMLButtonElement>) => {
+      // Use standard Tab key for navigation; Enter/Space for selection
       if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         setIndex(i);
       }
     },
@@ -93,18 +88,16 @@ export default function HeroVideoSection() {
   const seoTitle = 'Talent With Us | Digital Innovation Experts';
   const seoDesc =
     'We build world-class digital solutions: websites, mobile apps, automation tools, and AI-driven platforms for enterprises.';
+  const seoImage = FEATURES[0].image; // Pin to first image for consistent SEO
 
   return (
-    <section
-      className={`relative min-h-screen flex flex-col lg:flex-row items-center justify-between px-6 lg:px-24 py-20 ${sectionBg} ${textColor} overflow-hidden transition-colors duration-500`}
-      aria-label="Hero Banner: Digital Innovation Experts"
-    >
+    <>
       <Head>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
-        <meta property="og:image" content={FEATURES[index].image} />
+        <meta property="og:image" content={seoImage} />
         <meta property="og:type" content="website" />
         <meta name="twitter:title" content={seoTitle} />
         <meta name="twitter:description" content={seoDesc} />
@@ -112,146 +105,163 @@ export default function HeroVideoSection() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Animated blurred background bubbles */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-blue-400/15 blur-3xl"
-            initial={{
-              x: Math.random() * 1400 - 200,
-              y: Math.random() * 800 - 200,
-              width: Math.random() * 300 + 180,
-              height: Math.random() * 300 + 180,
-              opacity: 0.15,
-              rotate: Math.random() * 360,
-              scale: Math.random() * 0.6 + 0.4,
-            }}
-            animate={{
-              x: Math.random() * 800 + 100 * i,
-              y: Math.random() * 300 + 100 * i,
-              opacity: [0.16, 0.19, 0.16],
-              rotate: Math.random() * 360,
-            }}
-            transition={{
-              duration: Math.random() * 16 + 10,
-              repeat: Infinity,
-              repeatType: 'mirror',
-            }}
+      <section
+        className={`relative isolate min-h-screen w-full overflow-hidden ${theme.sectionBg} ${theme.textColor}`}
+        aria-label="Hero Banner: Digital Innovation Experts"
+      >
+        {/* Modern "Aurora" Background Glow */}
+        <div
+          className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
+          aria-hidden="true"
+        >
+          <div
+            className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#1EB8F3] to-[#0059FF] opacity-15 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
             style={{
-              zIndex: 0,
-              left: i % 2 === 0 ? `${8 * i}px` : undefined,
-              right: i % 2 === 1 ? `${8 * i}px` : undefined,
-              top: `${12 * i}px`,
+              clipPath:
+                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
             }}
           />
-        ))}
-      </div>
-
-      {/* Left: Text */}
-      <motion.div
-        className="lg:w-1/2 z-10"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: 'easeOut' }}
-      >
-        <h1
-          className={`text-4xl text-center md:text-left md:text-6xl font-bold leading-tight mb-8`}
-        >
-          <span className={headlineGradient}>Digital Innovation</span>
-          <br />
-          <span className="text-black">That Moves Enterprises Forward</span>
-        </h1>
-        <p className="text-lg md:text-xl mb-10 max-w-xl mx-auto md:mx-0 text-gray-800">
-          From concept to launch, we build performant, scalable, and stunning
-          digital products tailored for enterprise impact.
-        </p>
-        <nav
-          aria-label="Hero Call to Action"
-          className="flex flex-col sm:flex-row gap-4"
-        >
-          <motion.a
-            href="/contactUs"
-            whileHover={{ scale: 1.07, boxShadow: '0 0 32px #1EB8F3' }}
-            whileTap={{ scale: 0.98 }}
-            className={`px-8 py-3 rounded-full text-center text-lg font-semibold shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 ${buttonPrimary} transition-colors`}
-            tabIndex={0}
-            aria-label="Start Your Project"
-          >
-            Start Your Project
-          </motion.a>
-          <motion.a
-            href="/work"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            className={`px-8 py-3 rounded-full text-center text-lg font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${buttonSecondary}`}
-            tabIndex={0}
-            aria-label="Explore Our Work"
-          >
-            Explore Our Work
-          </motion.a>
-        </nav>
-      </motion.div>
-
-      {/* Right: Optimized Image Carousel */}
-      <div className="lg:w-1/2 w-full relative mt-14 lg:mt-0 z-10">
-        <div
-          className={`relative w-full aspect-[4/3] overflow-hidden rounded-2xl border border-gray-200 ${shadowStrong}`}
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={FEATURES[index].image}
-              initial={{ opacity: 0, x: 60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -60 }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
-              className="absolute inset-0"
-              style={{ willChange: 'opacity, transform' }}
-            >
-              <Image
-                src={FEATURES[index].image}
-                alt={FEATURES[index].title}
-                fill
-                priority={index === 0}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover w-full h-full rounded-2xl select-none"
-                loading={index === 0 ? 'eager' : 'lazy'}
-                draggable={false}
-              />
-              <div
-                className={`absolute bottom-0 left-0 right-0 px-6 py-5 ${cardBg} rounded-b-2xl backdrop-blur-xl`}
-              >
-                <h3 className="text-2xl font-semibold">
-                  {FEATURES[index].title}
-                </h3>
-                <p className={`text-base mt-1 ${subTextColor}`}>
-                  {FEATURES[index].description}
-                </p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
         </div>
-        {/* Carousel Dots */}
-        <nav
-          className="flex justify-center mt-8 space-x-3"
-          aria-label="Slide navigation"
-        >
-          {FEATURES.map((feat, i) => (
-            <button
-              key={feat.title}
-              onClick={() => setIndex(i)}
-              onKeyDown={(e) => handleDotKeyDown(i, e)}
-              className={`w-4 h-4 rounded-full cursor-pointer transition-all outline-none focus:ring-2 focus:ring-blue-400 ${
-                i === index ? dotActive : dotInactive
-              }`}
-              aria-label={`Show ${feat.title} slide`}
-              aria-current={i === index}
-              tabIndex={0}
-              type="button"
-            />
-          ))}
-        </nav>
-      </div>
-    </section>
+
+        {/* Main Content Wrapper */}
+        <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+          {/* Top: Centered Text Content */}
+          <motion.div
+            className="max-w-3xl mx-auto text-center z-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
+          >
+            <h1
+              className={`text-5xl font-extrabold tracking-tight ${theme.textColor} sm:text-7xl`}
+            >
+              <span className={theme.headlineGradient}>Digital Innovation</span>
+              <br />
+              That Moves Enterprises Forward
+            </h1>
+            <p
+              className={`mt-6 text-lg leading-8 ${theme.subTextColor} sm:text-xl`}
+            >
+              From concept to launch, we build performant, scalable, and
+              stunning digital products tailored for enterprise impact.
+            </p>
+            <nav
+              aria-label="Hero Call to Action"
+              className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6"
+            >
+              <motion.a
+                href="/contactUs"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className={`w-full sm:w-auto px-8 py-3 rounded-full text-center text-lg font-semibold shadow-lg ${theme.buttonPrimary} ${theme.shadowStrong} focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2`}
+                tabIndex={0}
+                aria-label="Start Your Project"
+              >
+                Start Your Project
+              </motion.a>
+              <motion.a
+                href="/work"
+                whileHover={{ scale: 1.05, border: '2px solid #3b82f6' }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className={`w-full sm:w-auto px-8 py-3 rounded-full text-center text-lg font-semibold ${theme.buttonSecondary} transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2`}
+                tabIndex={0}
+                aria-label="Explore Our Work"
+              >
+                Explore Our Work
+              </motion.a>
+            </nav>
+          </motion.div>
+
+          {/* Bottom: Interactive Tabbed Carousel */}
+          <div className="mt-16 sm:mt-24 z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-12 lg:items-start">
+              {/* Left: Feature Tabs */}
+              <nav
+                className="flex flex-col space-y-4 lg:col-span-4"
+                role="tablist"
+                aria-label="Feature selection"
+              >
+                {FEATURES.map((feat, i) => (
+                  <button
+                    key={feat.title}
+                    id={`feature-tab-${i}`}
+                    role="tab"
+                    tabIndex={0}
+                    aria-selected={i === index}
+                    aria-controls={`feature-panel-${i}`}
+                    onClick={() => setIndex(i)}
+                    onKeyDown={(e) => handleTabKeyDown(i, e)}
+                    className={`relative w-full text-left p-5 rounded-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+                      i === index
+                        ? `${theme.shadowMedium}`
+                        : `${theme.inactiveTabBg} hover:${theme.activeTabBg}/80`
+                    }`}
+                  >
+                    {/* Animated "Magic" Background */}
+                    {i === index && (
+                      <motion.div
+                        layoutId="active-tab-indicator"
+                        className={`absolute inset-0 rounded-xl ${theme.activeTabBg}`}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 350,
+                          damping: 30,
+                        }}
+                      />
+                    )}
+                    <div className="relative z-10">
+                      <h3
+                        className={`text-lg font-semibold ${theme.textColor}`}
+                      >
+                        {feat.title}
+                      </h3>
+                      <p className={`mt-1 text-sm ${theme.subTextColor}`}>
+                        {feat.description}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </nav>
+
+              {/* Right: Image Panel */}
+              <div className="lg:col-span-8 mt-10 lg:mt-0">
+                <div
+                  className={`relative w-full aspect-[16/9] overflow-hidden rounded-2xl ${theme.shadowStrong}`}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={FEATURES[index].image}
+                      id={`feature-panel-${index}`}
+                      role="tabpanel"
+                      tabIndex={0}
+                      aria-labelledby={`feature-tab-${index}`}
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -30 }}
+                      transition={{ duration: 0.5, ease: 'easeInOut' }}
+                      className="absolute inset-0"
+                      style={{ willChange: 'opacity, transform' }}
+                    >
+                      <Image
+                        src={FEATURES[index].image}
+                        alt={FEATURES[index].title}
+                        fill
+                        priority={index === 0}
+                        sizes="(max-width: 1024px) 100vw, 66vw"
+                        className="object-cover w-full h-full select-none"
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        draggable={false}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
